@@ -1,0 +1,7 @@
+MANIFEST
+procfs/__init__.py
+procfs/procfs.py
+procfs/sysctl.py
+procfs/utilist.py
+rpm/SPECS/python-linux-procfs.spec
+setup.py
