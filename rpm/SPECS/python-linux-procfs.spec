@@ -1,7 +1,7 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Name: python-linux-procfs
-Version: 0.1
+Version: 0.2
 Release: 1%{?dist}
 License: GPLv2
 Summary: Linux /proc abstraction classes

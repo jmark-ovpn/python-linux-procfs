@@ -4,7 +4,7 @@
 
 import os, time, utilist
 
-VERSION="0.1"
+VERSION="0.2"
 
 def process_cmdline(pid_info):
 	if pid_info.has_key("cmdline"):
@@ -90,22 +90,30 @@ class pidstats:
 
 	def reload_threads(self):
 		for pid in self.processes.keys():
-			threads = pidstats("/proc/%d/task/" % pid)
-			# remove thread leader
-			del threads[pid]
-			if not threads.keys():
-				continue
-			self.processes[pid]["threads"] = threads
+			try:
+				threads = pidstats("/proc/%d/task/" % pid)
+				# remove thread leader
+				del threads[pid]
+				if not threads.keys():
+					continue
+				self.processes[pid]["threads"] = threads
+			except OSError:
+				# process vanished, remove it
+				del self.processes[pid]
 
 	def load_cmdline(self):
 		for pid in self.processes.keys():
 			if self.processes[pid].has_key("cmdline"):
 				continue
-			f = file("/proc/%d/cmdline" % pid)
-			line = f.readline()
-			if line:
-				self.processes[pid]["cmdline"] = line.strip().split('\0')
-			f.close()
+			try:
+				f = file("/proc/%d/cmdline" % pid)
+				line = f.readline()
+				if line:
+					self.processes[pid]["cmdline"] = line.strip().split('\0')
+				f.close()
+			except OSError:
+				# process vanished, remove it
+				del self.processes[pid]
 
 	def find_by_name(self, name):
 		name = name[:15]
