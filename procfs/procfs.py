@@ -111,7 +111,7 @@ class pidstats:
 				if line:
 					self.processes[pid]["cmdline"] = line.strip().split('\0')
 				f.close()
-			except OSError:
+			except IOError:
 				# process vanished, remove it
 				del self.processes[pid]
 
