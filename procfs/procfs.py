@@ -289,8 +289,9 @@ class cpuinfo:
 					self.sockets.append(socket_id)
 
 		f.close()
-		self.nr_sockets = len(self.sockets)
-		self.nr_cores = int(self.tags["cpu cores"]) * self.nr_sockets
+		self.nr_sockets = self.sockets and len(self.sockets) or \
+				  (self.nr_cpus / ("siblings" in self.tags and int(self.tags["siblings"]) or 1))
+		self.nr_cores = ("cpu cores" in self.tags and int(self.tags["cpu cores"]) or 1) * self.nr_sockets
 
 class smaps_lib:
 	def __init__(self, lines):
