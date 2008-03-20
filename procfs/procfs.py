@@ -257,10 +257,11 @@ class cmdline:
 		f.close()
 
 class cpuinfo:
-	def __init__(self):
+	def __init__(self, filename="/proc/cpuinfo"):
 		self.tags = {}
 		self.nr_cpus = 0
-		self.parse()
+		self.sockets = []
+		self.parse(filename)
 
 	def __getitem__(self, key):
 		return self.tags[key.lower()]
@@ -268,8 +269,8 @@ class cpuinfo:
 	def keys(self):
 		return self.tags.keys()
 
-	def parse(self):
-		f = file("/proc/cpuinfo")
+	def parse(self, filename):
+		f = file(filename)
 		for line in f.readlines():
 			line = line.strip()
 			if len(line) == 0:
@@ -282,8 +283,14 @@ class cpuinfo:
 			elif tagname == "core id":
 				continue
 			self.tags[tagname] = fields[1].strip()
+			if tagname == "physical id":
+				socket_id = self.tags[tagname]
+				if socket_id not in self.sockets:
+					self.sockets.append(socket_id)
 
 		f.close()
+		self.nr_sockets = len(self.sockets)
+		self.nr_cores = int(self.tags["cpu cores"]) * self.nr_sockets
 
 class smaps_lib:
 	def __init__(self, lines):
