@@ -376,10 +376,11 @@ class cpustat:
 			self.guest = int(fields[8])
 
 class cpusstats:
-	def __init__(self):
+	def __init__(self, filename = "/proc/stat"):
 		self.entries = []
 		self.time = None
 		self.hertz = os.sysconf(2)
+		self.filename = filename
 		self.reload()
 
 	def __iter__(self):
@@ -394,7 +395,7 @@ class cpusstats:
 	def reload(self):
 		last_entries = self.entries
 		self.entries = []
-		f = file("/proc/stat")
+		f = file(self.filename)
 		for line in f.readlines():
 			fields = line.strip().split()
 			if fields[0][:3].lower() != "cpu":
