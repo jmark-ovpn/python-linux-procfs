@@ -370,10 +370,11 @@ class cpustat:
 		 self.idle,
 		 self.iowait,
 		 self.irq,
-		 self.softirq,
-		 self.steal) = [int(i) for i in fields[1:9]]
-		if len(fields) > 8:
-			self.guest = int(fields[8])
+		 self.softirq) = [int(i) for i in fields[1:8]]
+		if len(fields) > 7:
+			self.steal = int(fields[7])
+			if len(fields) > 8:
+				self.guest = int(fields[8])
 
 class cpusstats:
 	def __init__(self, filename = "/proc/stat"):
