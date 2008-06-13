@@ -378,7 +378,7 @@ class cpustat:
 
 class cpusstats:
 	def __init__(self, filename = "/proc/stat"):
-		self.entries = []
+		self.entries = {}
 		self.time = None
 		self.hertz = os.sysconf(2)
 		self.filename = filename
@@ -391,24 +391,35 @@ class cpusstats:
 		return self.entries[key]
 
 	def __len__(self):
-		return len(self.entries)
+		return len(self.entries.keys())
+
+	def keys(self):
+		return self.entries.keys()
 
 	def reload(self):
 		last_entries = self.entries
-		self.entries = []
+		self.entries = {}
 		f = file(self.filename)
 		for line in f.readlines():
 			fields = line.strip().split()
 			if fields[0][:3].lower() != "cpu":
 				continue
-			self.entries.append(cpustat(fields))
+			c = cpustat(fields)
+			if c.name == "cpu":
+				idx = 0
+			else:
+				idx = int(c.name[3:]) + 1
+			self.entries[idx] = c
 		f.close()
 		last_time = self.time
 		self.time = time.time()
-		if len(last_entries) > 0:
+		if last_entries:
 			delta_sec = self.time - last_time
 			interval_hz = delta_sec * self.hertz
-			for cpu in range(len(last_entries)):
+			for cpu in self.entries.keys():
+				if cpu not in last_entries:
+					curr.usage = 0
+					continue
 				curr = self.entries[cpu]
 				prev = last_entries[cpu]
 				delta = (curr.user - prev.user) + \
