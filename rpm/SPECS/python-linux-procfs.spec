@@ -15,7 +15,7 @@ BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Abstractions to extract information from the Linux kernel /proc files.
 
 %prep
-%setup -q -c -n %{name}-%{version}
+%setup -q
 
 %build
 %{__python} setup.py build
