@@ -1,4 +1,5 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
+%{!?python_ver: %define python_ver %(%{__python} -c "import sys ; print sys.version[:3]")}
 
 Name: python-linux-procfs
 Version: 0.4
@@ -30,7 +31,9 @@ rm -rf %{buildroot}
 %files
 %defattr(0755,root,root,0755)
 %{python_sitelib}/procfs/
+%if "%{python_ver}" >= "2.5"
 %{python_sitelib}/*.egg-info
+%endif
 
 %changelog
 * Tue Aug 12 2008 Arnaldo Carvalho de Melo <acme@redhat.com> - 0.4-1
