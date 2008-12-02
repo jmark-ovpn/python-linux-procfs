@@ -204,6 +204,18 @@ class pidstats:
 		return int(self.processes[pid]["stat"]["flags"]) & \
 		       self.PF_THREAD_BOUND and True or False
 
+	def process_flags(self, pid):
+		sflags = []
+		flags = int(self.processes[pid]["stat"]["flags"])
+		for attr in dir(self):
+			if attr[:3] != "PF_":
+				continue
+			value = getattr(self, attr)
+			if value & flags:
+				sflags.append(attr)
+
+		return sflags
+
 class interrupts:
 	def __init__(self):
 		self.interrupts = {}
