@@ -12,7 +12,7 @@ def process_cmdline(pid_info):
 
 	return pid_info["stat"]["comm"]
 
-class pidstats:
+class pidstat:
 
 	PF_ALIGNWARN	 = 0x00000001
 	PF_STARTING	 = 0x00000002
@@ -55,6 +55,81 @@ class pidstats:
 			     "rt_priority", "policy",
 			     "delayacct_blkio_ticks" ]
 
+	def __init__(self, pid, basedir = "/proc"):
+		self.pid = pid
+		self.load(basedir)
+
+	def __getitem__(self, fieldname):
+		return self.fields[fieldname]
+
+	def keys(self):
+		return self.fields.keys()
+
+	def has_key(self, fieldname):
+		return self.fields.has_key(fieldname)
+
+	def load(self, basedir = "/proc"):
+		f = open("%s/%d/stat" % (basedir, self.pid))
+		fields = f.readline().strip().split()
+		f.close()
+		self.fields = {}
+		nr_fields = min(len(fields), len(self.proc_stat_fields))
+		for i in range(nr_fields):
+			attrname = self.proc_stat_fields[i]
+			value = fields[i]
+			if attrname == "comm":
+				self.fields["comm"] = value.strip('()')
+			else:
+				try:
+					self.fields[attrname] = int(value)
+				except:
+					self.fields[attrname] = value
+
+	def is_bound_to_cpu(self):
+		return self.fields["flags"] & self.PF_THREAD_BOUND and \
+			True or False
+
+	def process_flags(self):
+		sflags = []
+		for attr in dir(self):
+			if attr[:3] != "PF_":
+				continue
+			value = getattr(self, attr)
+			if value & self.flags:
+				sflags.append(attr)
+
+		return sflags
+
+class pidstatus:
+
+	def __init__(self, pid, basedir = "/proc"):
+		self.pid = pid
+		self.load(basedir)
+
+	def __getitem__(self, fieldname):
+		return self.fields[fieldname]
+
+	def keys(self):
+		return self.fields.keys()
+
+	def has_key(self, fieldname):
+		return self.fields.has_key(fieldname)
+
+	def load(self, basedir = "/proc"):
+		f = open("%s/%d/status" % (basedir, self.pid))
+		self.fields = {}
+		for line in f.readlines():
+			fields = line.split(":")
+			name = fields[0]
+			value = fields[1].strip()
+			try:
+				self.fields[fields[0]] = int(value)
+			except:
+				self.fields[fields[0]] = value
+		f.close()
+
+class pidstats:
+
 	def __init__(self, basedir = "/proc"):
 		self.basedir = basedir
 		self.processes = {}
@@ -76,26 +151,6 @@ class pidstats:
 	def has_key(self, key):
 		return self.processes.has_key(key)
 
-	def read_stat_entry(self, pid):
-		f = open("%s/%d/stat" % (self.basedir, pid))
-		tags = {}
-		fields = f.readline().strip().split()
-		nr_fields = min(len(fields), len(self.proc_stat_fields))
-		for i in range(nr_fields):
-			tags[self.proc_stat_fields[i]] = fields[i]
-		tags["comm"] = tags["comm"].strip('()')
-		f.close()
-		return tags
-
-	def read_status_entry(self, pid):
-		f = open("%s/%d/status" % (self.basedir, pid))
-		tags = {}
-		for line in f.readlines():
-			fields = line.split(":")
-			tags[fields[0]] = fields[1].strip()
-		f.close()
-		return tags
-
 	def reload(self):
 		del self.processes
 		self.processes = {}
@@ -108,13 +163,13 @@ class pidstats:
 
 			self.processes[pid] = {}
 			try:
-				self.processes[pid]["stat"] = self.read_stat_entry(pid)
+				self.processes[pid]["stat"] = pidstat(pid, self.basedir)
 			except:
 				del self.processes[pid]
 				continue
 
 			try:
-				self.processes[pid]["status"] = self.read_status_entry(pid)
+				self.processes[pid]["status"] = pidstatus(pid, self.basedir)
 			except:
 				del self.processes[pid]
 
@@ -201,20 +256,7 @@ class pidstats:
 		return priorities
 
 	def is_bound_to_cpu(self, pid):
-		return int(self.processes[pid]["stat"]["flags"]) & \
-		       self.PF_THREAD_BOUND and True or False
-
-	def process_flags(self, pid):
-		sflags = []
-		flags = int(self.processes[pid]["stat"]["flags"])
-		for attr in dir(self):
-			if attr[:3] != "PF_":
-				continue
-			value = getattr(self, attr)
-			if value & flags:
-				sflags.append(attr)
-
-		return sflags
+		return self.processes[pid]["stat"].is_bound_to_cpu()
 
 class interrupts:
 	def __init__(self):
