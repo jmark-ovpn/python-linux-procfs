@@ -7,7 +7,7 @@ import os, time, utilist
 VERSION="0.2"
 
 def process_cmdline(pid_info):
-	if pid_info.has_key("cmdline"):
+	if pid_info["cmdline"]:
 		return reduce(lambda a, b: a + " %s" % b, pid_info["cmdline"]).strip()
 
 	return pid_info["stat"]["comm"]
@@ -157,11 +157,8 @@ class process:
 
 	def load_cmdline(self):
 		f = file("/proc/%d/cmdline" % self.pid)
-		line = f.readline()
+		self.cmdline = f.readline().strip().split('\0')[:-1]
 		f.close()
-		if line:
-			self.cmdline = line.strip().split('\0')
-			print "pid: %d, cmdline=(%s)" % (self.pid, self.cmdline)
 
 	def load_threads(self):
 		self.threads = pidstats("/proc/%d/task/" % self.pid)
