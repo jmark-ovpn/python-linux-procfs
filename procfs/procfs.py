@@ -120,13 +120,53 @@ class pidstatus:
 		self.fields = {}
 		for line in f.readlines():
 			fields = line.split(":")
+			if len(fields) != 2:
+				continue
 			name = fields[0]
 			value = fields[1].strip()
 			try:
-				self.fields[fields[0]] = int(value)
+				self.fields[name] = int(value)
 			except:
-				self.fields[fields[0]] = value
+				self.fields[name] = value
 		f.close()
+
+class process:
+
+	def __init__(self, pid, basedir = "/proc"):
+		self.pid = pid
+		self.basedir = basedir
+
+	def __getitem__(self, attr):
+		if not hasattr(self, attr):
+			if attr in ("stat", "status"):
+				if attr == "stat":
+					sclass = pidstat
+				else:
+					sclass = pidstatus
+
+				setattr(self, attr, sclass(self.pid, self.basedir))
+			elif attr == "cmdline":
+				self.load_cmdline()
+			elif attr == "threads":
+				self.load_threads()
+
+		return getattr(self, attr)
+
+	def has_key(self, attr):
+		return hasattr(self, attr)
+
+	def load_cmdline(self):
+		f = file("/proc/%d/cmdline" % self.pid)
+		line = f.readline()
+		f.close()
+		if line:
+			self.cmdline = line.strip().split('\0')
+			print "pid: %d, cmdline=(%s)" % (self.pid, self.cmdline)
+
+	def load_threads(self):
+		self.threads = pidstats("/proc/%d/task/" % self.pid)
+		# remove thread leader
+		del self.threads[self.pid]
 
 class pidstats:
 
@@ -161,42 +201,13 @@ class pidstats:
 			except:
 				continue
 
-			self.processes[pid] = {}
-			try:
-				self.processes[pid]["stat"] = pidstat(pid, self.basedir)
-			except:
-				del self.processes[pid]
-				continue
-
-			try:
-				self.processes[pid]["status"] = pidstatus(pid, self.basedir)
-			except:
-				del self.processes[pid]
+			self.processes[pid] = process(pid, self.basedir)
 
 	def reload_threads(self):
 		for pid in self.processes.keys():
 			try:
-				threads = pidstats("/proc/%d/task/" % pid)
-				# remove thread leader
-				del threads[pid]
-				if not threads.keys():
-					continue
-				self.processes[pid]["threads"] = threads
+				self.processes[pid].load_threads()
 			except OSError:
-				# process vanished, remove it
-				del self.processes[pid]
-
-	def load_cmdline(self):
-		for pid in self.processes.keys():
-			if self.processes[pid].has_key("cmdline"):
-				continue
-			try:
-				f = file("/proc/%d/cmdline" % pid)
-				line = f.readline()
-				if line:
-					self.processes[pid]["cmdline"] = line.strip().split('\0')
-				f.close()
-			except IOError:
 				# process vanished, remove it
 				del self.processes[pid]
 
