@@ -215,8 +215,15 @@ class pidstats:
 		name = name[:15]
 		pids = []
 		for pid in self.processes.keys():
-			if self.processes[pid]["stat"]["comm"] == name:
-				pids.append(pid)
+			try:
+				if name == self.processes[pid]["stat"]["comm"]:
+					pids.append(pid)
+			except IOError:
+				# We're doing late loading of /proc files
+				# So if we get this exception is because the
+				# process vanished, remove it
+				del self.processes[pid]
+				
 		return pids
 
 	def find_by_regex(self, regex):
