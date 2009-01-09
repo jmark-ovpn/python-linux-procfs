@@ -4,7 +4,7 @@
 
 import os, time, utilist
 
-VERSION="0.2"
+VERSION="0.3"
 
 def process_cmdline(pid_info):
 	if pid_info["cmdline"]:
@@ -342,6 +342,17 @@ class interrupts:
 			   user in self.interrupts[i]["users"]:
 				return i
 		return None
+
+	def find_by_user_regex(self, regex):
+		irqs = []
+		for i in self.interrupts.keys():
+			if not self.interrupts[i].has_key("users"):
+				continue
+			for user in self.interrupts[i]["users"]:
+				if regex.match(user):
+					irqs.append(i)
+					break
+		return irqs
 
 class cmdline:
 	def __init__(self):
