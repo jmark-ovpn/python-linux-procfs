@@ -2,7 +2,7 @@
 %{!?python_ver: %define python_ver %(%{__python} -c "import sys ; print sys.version[:3]")}
 
 Name: python-linux-procfs
-Version: 0.4
+Version: 0.4.2
 Release: 1%{?dist}
 License: GPLv2
 Summary: Linux /proc abstraction classes
