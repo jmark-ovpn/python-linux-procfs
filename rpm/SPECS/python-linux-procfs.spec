@@ -36,6 +36,14 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Tue Aug 12 2008 Arnaldo Carvalho de Melo <acme@redhat.com> - 0.4.2-1
+- interrupts: Add find_by_user_regex
+- process: Always set the "cmdline" array, even if empty
+- pidstats: Remove dead processes in find_by_name()
+- pidstats: Add process class to catch dict references for late parsing
+- pidstats: Move the /proc/PID/{stat,status} parsing to classes
+- pidstats: Introduce process_flags method
+
 * Tue Aug 12 2008 Arnaldo Carvalho de Melo <acme@redhat.com> - 0.4-1
 - Per process flags needed by tuna
 
