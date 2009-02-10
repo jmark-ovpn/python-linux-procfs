@@ -2,7 +2,7 @@
 %{!?python_ver: %define python_ver %(%{__python} -c "import sys ; print sys.version[:3]")}
 
 Name: python-linux-procfs
-Version: 0.4.3
+Version: 0.4.4
 Release: 1%{?dist}
 License: GPLv2
 Summary: Linux /proc abstraction classes
@@ -32,11 +32,16 @@ rm -rf %{buildroot}
 %files
 %defattr(0755,root,root,0755)
 %{python_sitelib}/procfs/
+%defattr(0644,root,root,0755)
 %if "%{python_ver}" >= "2.5"
 %{python_sitelib}/*.egg-info
 %endif
+%doc COPYING
 
 %changelog
+* Mon Feb 10 2009 Arnaldo Carvalho de Melo <acme@redhat.com> - 0.4.4-1
+- Even more fixes due to the fedora review process
+
 * Mon Feb  9 2009 Arnaldo Carvalho de Melo <acme@redhat.com> - 0.4.3-1
 - Fixups due to the fedora review process
 

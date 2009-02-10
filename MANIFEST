@@ -1,4 +1,5 @@
 MANIFEST
+COPYING
 Makefile
 procfs/__init__.py
 procfs/procfs.py
