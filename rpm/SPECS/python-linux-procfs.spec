@@ -2,7 +2,7 @@
 %{!?python_ver: %define python_ver %(%{__python} -c "import sys ; print sys.version[:3]")}
 
 Name: python-linux-procfs
-Version: 0.4.2
+Version: 0.4.3
 Release: 1%{?dist}
 License: GPLv2
 Summary: Linux /proc abstraction classes
@@ -37,6 +37,9 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Mon Feb  9 2009 Arnaldo Carvalho de Melo <acme@redhat.com> - 0.4.3-1
+- Fixups due to the fedora review process
+
 * Tue Aug 12 2008 Arnaldo Carvalho de Melo <acme@redhat.com> - 0.4.2-1
 - interrupts: Add find_by_user_regex
 - process: Always set the "cmdline" array, even if empty
