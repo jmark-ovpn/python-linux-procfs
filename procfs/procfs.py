@@ -232,7 +232,7 @@ class pidstats:
 				if name == self.processes[pid]["stat"]["comm"]:
 					pids.append(pid)
 			except IOError:
-				# We're doing late loading of /proc files
+				# We're doing lazy loading of /proc files
 				# So if we get this exception is because the
 				# process vanished, remove it
 				del self.processes[pid]
@@ -242,15 +242,27 @@ class pidstats:
 	def find_by_regex(self, regex):
 		pids = []
 		for pid in self.processes.keys():
-			if regex.match(self.processes[pid]["stat"]["comm"]):
-				pids.append(pid)
+			try:
+				if regex.match(self.processes[pid]["stat"]["comm"]):
+					pids.append(pid)
+			except IOError:
+				# We're doing lazy loading of /proc files
+				# So if we get this exception is because the
+				# process vanished, remove it
+				del self.processes[pid]
 		return pids
 
 	def find_by_cmdline_regex(self, regex):
 		pids = []
 		for pid in self.processes.keys():
-			if regex.match(process_cmdline(self.processes[pid])):
-				pids.append(pid)
+			try:
+				if regex.match(process_cmdline(self.processes[pid])):
+					pids.append(pid)
+			except IOError:
+				# We're doing lazy loading of /proc files
+				# So if we get this exception is because the
+				# process vanished, remove it
+				del self.processes[pid]
 		return pids
 
 	def get_per_cpu_rtprios(self, basename):
@@ -263,7 +275,13 @@ class pidstats:
 			if not pids or len([n for n in pids if n not in processed_pids]) == 0:
 				break
 			for pid in pids:
-				priorities += "%s," % self.processes[pid]["stat"]["rt_priority"]
+				try:
+					priorities += "%s," % self.processes[pid]["stat"]["rt_priority"]
+				except IOError:
+					# We're doing lazy loading of /proc files
+					# So if we get this exception is because the
+					# process vanished, remove it
+					del self.processes[pid]
 			processed_pids += pids
 			cpu += 1
 
@@ -279,7 +297,13 @@ class pidstats:
 			if not pids or len([n for n in pids if n not in processed_pids]) == 0:
 				break
 			for pid in pids:
-				priorities += "%s," % self.processes[pid]["stat"]["rt_priority"]
+				try:
+					priorities += "%s," % self.processes[pid]["stat"]["rt_priority"]
+				except IOError:
+					# We're doing lazy loading of /proc files
+					# So if we get this exception is because the
+					# process vanished, remove it
+					del self.processes[pid]
 			processed_pids += pids
 			cpu += 1
 
