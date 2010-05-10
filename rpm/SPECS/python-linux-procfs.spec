@@ -2,7 +2,7 @@
 %{!?python_ver: %define python_ver %(%{__python} -c "import sys ; print sys.version[:3]")}
 
 Name: python-linux-procfs
-Version: 0.4.4
+Version: 0.4.5
 Release: 1%{?dist}
 License: GPLv2
 Summary: Linux /proc abstraction classes
@@ -39,6 +39,9 @@ rm -rf %{buildroot}
 %doc COPYING
 
 %changelog
+* Mon May 10 2010 Arnaldo Carvalho de Melo <acme@redhat.com> - 0.4.5-1
+- Fix https://bugzilla.redhat.com/show_bug.cgi?id=577365
+
 * Mon Feb 10 2009 Arnaldo Carvalho de Melo <acme@redhat.com> - 0.4.4-1
 - Even more fixes due to the fedora review process
 
