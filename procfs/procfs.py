@@ -165,6 +165,8 @@ class process:
 				self.load_cmdline()
 			elif attr == "threads":
 				self.load_threads()
+			elif attr == "cgroups":
+				self.load_cgroups()
 
 		return getattr(self, attr)
 
@@ -180,6 +182,16 @@ class process:
 		self.threads = pidstats("/proc/%d/task/" % self.pid)
 		# remove thread leader
 		del self.threads[self.pid]
+
+	def load_cgroups(self):
+		f = file("/proc/%d/cgroup" % self.pid)
+		self.cgroups = ""
+		for line in reversed(f.readlines()):
+			if len(self.cgroups):
+				self.cgroups = self.cgroups + "," + line[:-1]
+			else:
+				self.cgroups = line[:-1]
+		f.close()
 
 class pidstats:
 
