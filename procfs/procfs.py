@@ -462,7 +462,12 @@ class smaps_lib:
 		self.tags = {}
 		for line in lines[1:]:
 			fields = line.split()
-			self.tags[fields[0][:-1].lower()] = int(fields[1])
+			tag = fields[0][:-1].lower()
+			try:
+				self.tags[tag] = int(fields[1])
+			except:
+				# VmFlags are strings
+				self.tags[tag] = fields
 
 	def __getitem__(self, key):
 		return self.tags[key.lower()]
@@ -489,7 +494,7 @@ class smaps:
 			if not line:
 				break
 			line = line.strip()
-			if len(line.split()) < 4:
+			if line.split()[0][-1] == ':':
 				lines.append(line)
 			else:
 				break
