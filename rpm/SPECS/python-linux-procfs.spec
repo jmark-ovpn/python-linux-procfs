@@ -2,7 +2,7 @@
 %{!?python_ver: %define python_ver %(%{__python} -c "import sys ; print sys.version[:3]")}
 
 Name: python-linux-procfs
-Version: 0.4.5
+Version: 0.4.6
 Release: 1%{?dist}
 License: GPLv2
 Summary: Linux /proc abstraction classes
@@ -39,6 +39,10 @@ rm -rf %{buildroot}
 %doc COPYING
 
 %changelog
+* Wed Jun  5 2013 Jiri Kastner <jkastner@redhat.com> - 0.4.6-1
+- support for parsing cgroups
+- support for parsing environ variables
+
 * Mon May 10 2010 Arnaldo Carvalho de Melo <acme@redhat.com> - 0.4.5-1
 - Fix https://bugzilla.redhat.com/show_bug.cgi?id=577365
 
