@@ -69,7 +69,7 @@ class pidstat:
 			     "sigignore", "sigcatch", "wchan", "nswap",
 			     "cnswap", "exit_signal", "processor",
 			     "rt_priority", "policy",
-			     "delayacct_blkio_ticks" ]
+			     "delayacct_blkio_ticks", "environ" ]
 
 	def __init__(self, pid, basedir = "/proc"):
 		self.pid = pid
@@ -167,6 +167,8 @@ class process:
 				self.load_threads()
 			elif attr == "cgroups":
 				self.load_cgroups()
+			elif attr == "environ":
+				self.load_environ()
 
 		return getattr(self, attr)
 
@@ -191,6 +193,15 @@ class process:
 				self.cgroups = self.cgroups + "," + line[:-1]
 			else:
 				self.cgroups = line[:-1]
+		f.close()
+
+	def load_environ(self):
+		self.environ = {}
+		f = file("/proc/%d/environ" % self.pid)
+		for x in f.readline().split('\0'):
+			if len(x) > 0:
+				y = x.split('=')
+				self.environ[y[0]] = y[1]
 		f.close()
 
 class pidstats:
