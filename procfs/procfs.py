@@ -84,6 +84,9 @@ class pidstat:
 	def has_key(self, fieldname):
 		return self.fields.has_key(fieldname)
 
+	def __contains__(self, fieldname):
+		return fieldname in self.fields
+
 	def load(self, basedir = "/proc"):
 		f = open("%s/%d/stat" % (basedir, self.pid))
 		fields = f.readline().strip().split()
@@ -131,6 +134,9 @@ class pidstatus:
 	def has_key(self, fieldname):
 		return self.fields.has_key(fieldname)
 
+	def __contains__(self, fieldname):
+		return fieldname in self.fields
+
 	def load(self, basedir = "/proc"):
 		f = open("%s/%d/status" % (basedir, self.pid))
 		self.fields = {}
@@ -173,6 +179,9 @@ class process:
 		return getattr(self, attr)
 
 	def has_key(self, attr):
+		return hasattr(self, attr)
+
+	def __contains__(self, attr):
 		return hasattr(self, attr)
 
 	def load_cmdline(self):
@@ -226,6 +235,9 @@ class pidstats:
 
 	def has_key(self, key):
 		return self.processes.has_key(key)
+
+	def __contains__(self, key):
+		return key in self.processes
 
 	def reload(self):
 		del self.processes
@@ -349,6 +361,9 @@ class interrupts:
 
 	def has_key(self, key):
 		return self.interrupts.has_key(str(key))
+
+	def __contains__(self, key):
+		return str(key) in self.interrupts
 
 	def reload(self):
 		del self.interrupts
