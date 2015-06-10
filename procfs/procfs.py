@@ -2,7 +2,7 @@
 # -*- python -*-
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2007 Red Hat, Inc.
+# Copyright (C) 2007-2015 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@ class pidstat:
 	PF_SPREAD_PAGE	 = 0x01000000
 	PF_SPREAD_SLAB	 = 0x02000000
 	PF_THREAD_BOUND	 = 0x04000000
+	PF_NO_SETAFFINITY = 0x04000000 # /* Userland is not allowed to meddle with cpus_allowed */
 	PF_MEMPOLICY	 = 0x10000000
 	PF_MUTEX_TESTER	 = 0x20000000
 	PF_FREEZER_SKIP	 = 0x40000000
