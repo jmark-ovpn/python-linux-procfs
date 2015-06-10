@@ -405,8 +405,6 @@ class interrupts:
 		return dict
 
 	def parse_affinity(self, irq):
-		if os.getuid() != 0:
-			return
 		try:
 			f = file("/proc/irq/%s/smp_affinity" % irq)
 			line = f.readline()
