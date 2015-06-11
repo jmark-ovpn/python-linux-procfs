@@ -30,22 +30,30 @@ def process_cmdline(pid_info):
 
 class pidstat:
 
+	# Entries with the same value, the one with a comment after it is the
+	# more recent, having replaced the other name in v4.1-rc kernel times.
+
 	PF_ALIGNWARN	 = 0x00000001
 	PF_STARTING	 = 0x00000002
 	PF_EXITING	 = 0x00000004
 	PF_EXITPIDONE	 = 0x00000008
 	PF_VCPU		 = 0x00000010
+	PF_WQ_WORKER	 = 0x00000020 # /* I'm a workqueue worker */
 	PF_FORKNOEXEC	 = 0x00000040
+	PF_MCE_PROCESS	 = 0x00000080 # /* process policy on mce errors */
 	PF_SUPERPRIV	 = 0x00000100
 	PF_DUMPCORE	 = 0x00000200
 	PF_SIGNALED	 = 0x00000400
 	PF_MEMALLOC	 = 0x00000800
+	PF_NPROC_EXCEEDED= 0x00001000 # /* set_user noticed that RLIMIT_NPROC was exceeded */
 	PF_FLUSHER	 = 0x00001000
 	PF_USED_MATH	 = 0x00002000
+	PF_USED_ASYNC	 = 0x00004000 # /* used async_schedule*(), used by module init */
 	PF_NOFREEZE	 = 0x00008000
 	PF_FROZEN	 = 0x00010000
 	PF_FSTRANS	 = 0x00020000
 	PF_KSWAPD	 = 0x00040000
+	PF_MEMALLOC_NOIO = 0x00080000 # /* Allocating memory without IO involved */
 	PF_SWAPOFF	 = 0x00080000
 	PF_LESS_THROTTLE = 0x00100000
 	PF_KTHREAD	 = 0x00200000
@@ -55,10 +63,12 @@ class pidstat:
 	PF_SPREAD_SLAB	 = 0x02000000
 	PF_THREAD_BOUND	 = 0x04000000
 	PF_NO_SETAFFINITY = 0x04000000 # /* Userland is not allowed to meddle with cpus_allowed */
+	PF_MCE_EARLY	 = 0x08000000 # /* Early kill for mce process policy */
 	PF_MEMPOLICY	 = 0x10000000
 	PF_MUTEX_TESTER	 = 0x20000000
 	PF_FREEZER_SKIP	 = 0x40000000
 	PF_FREEZER_NOSIG = 0x80000000
+	PF_SUSPEND_TASK	 = 0x80000000 # /* this thread called freeze_processes and should not be frozen */
 
 	proc_stat_fields = [ "pid", "comm", "state", "ppid", "pgrp", "session",
 			     "tty_nr", "tpgid", "flags", "minflt", "cminflt",
