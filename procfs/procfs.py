@@ -115,7 +115,7 @@ class pidstat:
 			if attr[:3] != "PF_":
 				continue
 			value = getattr(self, attr)
-			if value & self.flags:
+			if value & self.fields["flags"]:
 				sflags.append(attr)
 
 		return sflags
