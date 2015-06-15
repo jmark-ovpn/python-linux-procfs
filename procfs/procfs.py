@@ -100,8 +100,9 @@ class pidstat:
 
 	def load(self, basedir = "/proc"):
 		f = open("%s/%d/stat" % (basedir, self.pid))
-		fields = f.readline().strip().split()
+		fields = f.readline().strip().split(') ')
 		f.close()
+		fields = fields[0].split(' (') + fields[1].split()
 		self.fields = {}
 		nr_fields = min(len(fields), len(self.proc_stat_fields))
 		for i in range(nr_fields):
