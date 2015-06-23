@@ -2,7 +2,7 @@
 %{!?python_ver: %define python_ver %(%{__python} -c "import sys ; print sys.version[:3]")}
 
 Name: python-linux-procfs
-Version: 0.4.7
+Version: 0.4.8
 Release: 1%{?dist}
 License: GPLv2
 Summary: Linux /proc abstraction classes
@@ -42,6 +42,10 @@ rm -rf %{buildroot}
 %doc COPYING
 
 %changelog
+* Tue Jun 23 2015 Arnaldo Carvalho de Melo <acme@redhat.com> - 0.4.8-1
+- Support spaces in COMM names
+- Fixes: https://bugzilla.redhat.com/show_bug.cgi?id=1232394
+
 * Thu Jun 11 2015 Arnaldo Carvalho de Melo <acme@redhat.com> - 0.4.7-1
 - Fix pidstat.process_flag()
 - Introduce pflags utility
