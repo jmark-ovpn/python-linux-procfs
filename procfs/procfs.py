@@ -410,7 +410,7 @@ class interrupts:
 				dict["type"] = fields[self.nr_cpus]
 				# look if there are users (interrupts 3 and 4 haven't)
 				if nr_fields > self.nr_cpus + 1:
-					dict["users"] = [a.strip() for a in line[line.index(fields[self.nr_cpus + 1]):].split(',')]
+					dict["users"] = [a.strip() for a in fields[nr_fields - 1].split(',')]
 				else:
 					dict["users"] = []
 		return dict
