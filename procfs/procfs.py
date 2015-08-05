@@ -29,6 +29,31 @@ def process_cmdline(pid_info):
 	return pid_info["stat"]["comm"]
 
 class pidstat:
+	"""Provides a dictionary to access the fields in the per process /proc/PID/stat
+	   files.
+
+	   One can obtain the available fields asking for the keys of the dictionary, e.g.:
+
+		>>> p = procfs.pidstat(1)
+		>>> print p.keys()
+		['majflt', 'rss', 'cnswap', 'cstime', 'pid', 'session', 'startstack', 'startcode', 'cmajflt', 'blocked', 'exit_signal', 'minflt', 'nswap', 'environ', 'priority', 'state', 'delayacct_blkio_ticks', 'policy', 'rt_priority', 'ppid', 'nice', 'cutime', 'endcode', 'wchan', 'num_threads', 'sigcatch', 'comm', 'stime', 'sigignore', 'tty_nr', 'kstkeip', 'utime', 'tpgid', 'itrealvalue', 'kstkesp', 'rlim', 'signal', 'pgrp', 'flags', 'starttime', 'cminflt', 'vsize', 'processor']
+
+	   And then access the various process properties using it as a dictionary:
+
+		>>> print p['comm']
+		systemd
+		>>> print p['priority']
+		20
+		>>> print p['state']
+		S
+
+	   Please refer to the 'procfs(5)' man page, by using:
+
+		$ man 5 procfs
+
+	   To see information for each of the above fields, it is part of the
+           'man-pages' RPM package.
+	"""
 
 	# Entries with the same value, the one with a comment after it is the
 	# more recent, having replaced the other name in v4.1-rc kernel times.
