@@ -157,6 +157,42 @@ class pidstat:
 		return sflags
 
 class pidstatus:
+	"""
+	Provides a dictionary to access the fields in the per process /proc/PID/status
+	files. This provides additional information about processes and threads to what
+	can be obtained with the procfs.pidstat() class.
+
+	One can obtain the available fields asking for the keys of the dictionary, e.g.:
+
+		>>> import procfs
+		>>> p = procfs.pidstatus(1)
+		>>> print p.keys()
+		['VmExe', 'CapBnd', 'NSpgid', 'Tgid', 'NSpid', 'VmSize', 'VmPMD', 'ShdPnd', 'State', 'Gid', 'nonvoluntary_ctxt_switches', 'SigIgn', 'VmStk', 'VmData', 'SigCgt', 'CapEff', 'VmPTE', 'Groups', 'NStgid', 'Threads', 'PPid', 'VmHWM', 'NSsid', 'VmSwap', 'Name', 'SigBlk', 'Mems_allowed_list', 'VmPeak', 'Ngid', 'VmLck', 'SigQ', 'VmPin', 'Mems_allowed', 'CapPrm', 'Seccomp', 'VmLib', 'Cpus_allowed', 'Uid', 'SigPnd', 'Pid', 'Cpus_allowed_list', 'TracerPid', 'CapInh', 'voluntary_ctxt_switches', 'VmRSS', 'FDSize']
+		>>> print p["Pid"]
+		1
+		>>> print p["Threads"]
+		1
+		>>> print p["VmExe"]
+		1248 kB
+		>>> print p["Cpus_allowed"]
+		f
+		>>> print p["SigQ"]
+		0/30698
+		>>> print p["VmPeak"]
+		320300 kB
+		>>>
+
+	Please refer to the 'procfs(5)' man page, by using:
+
+		$ man 5 procfs
+
+	To see information for each of the above fields, it is part of the
+	'man-pages' RPM package.
+
+	In the man page there will be references to further documentation, like
+        referring to the "getrlimit(2)" man page when explaining the "SigQ"
+        line/field.
+	"""
 
 	def __init__(self, pid, basedir = "/proc"):
 		self.pid = pid
@@ -190,6 +226,12 @@ class pidstatus:
 		f.close()
 
 class process:
+	"""
+	Information about a process with a given pid, provides a dictionary with
+	two entries, instances of different wrappers for /proc/ process related
+	meta files: "stat" and "status", see the documentation for procfs.pidstat
+	and procfs.pidstatus for further info about those classes.
+	"""
 
 	def __init__(self, pid, basedir = "/proc"):
 		self.pid = pid
