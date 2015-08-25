@@ -23,6 +23,10 @@ import os, time, utilist
 VERSION="0.3"
 
 def process_cmdline(pid_info):
+	"""
+	Returns the process command line, if available in the given `process' class, if
+	not available, falls back to using the comm (short process name) in its pidstat key.
+	"""
 	if pid_info["cmdline"]:
 		return reduce(lambda a, b: a + " %s" % b, pid_info["cmdline"]).strip()
 
@@ -142,10 +146,50 @@ class pidstat:
 					self.fields[attrname] = value
 
 	def is_bound_to_cpu(self):
+		"""
+		Returns true if this process has a fixed smp affinity mask,
+                not allowing it to be moved to a different set of CPUs.
+		"""
 		return self.fields["flags"] & self.PF_THREAD_BOUND and \
 			True or False
 
 	def process_flags(self):
+		"""
+		Returns a list with all the process flags known, details depend
+		on kernel version, declared in the file include/linux/sched.h in
+		the kernel sources.
+
+		As of v4.2-rc7 these include (from include/linux/sched.h comments):
+
+			PF_EXITING	   Getting shut down
+			PF_EXITPIDONE	   Pi exit done on shut down
+			PF_VCPU		   I'm a virtual CPU
+			PF_WQ_WORKER	   I'm a workqueue worker
+			PF_FORKNOEXEC	   Forked but didn't exec
+			PF_MCE_PROCESS	   Process policy on mce errors
+			PF_SUPERPRIV	   Used super-user privileges
+			PF_DUMPCORE	   Dumped core
+			PF_SIGNALED	   Killed by a signal
+			PF_MEMALLOC	   Allocating memory
+			PF_NPROC_EXCEEDED  Set_user noticed that RLIMIT_NPROC was exceeded
+			PF_USED_MATH	   If unset the fpu must be initialized before use
+			PF_USED_ASYNC	   Used async_schedule*(), used by module init
+			PF_NOFREEZE	   This thread should not be frozen
+			PF_FROZEN	   Frozen for system suspend
+			PF_FSTRANS	   Inside a filesystem transaction
+			PF_KSWAPD	   I am kswapd
+			PF_MEMALLOC_NOIO   Allocating memory without IO involved
+			PF_LESS_THROTTLE   Throttle me less: I clean memory
+			PF_KTHREAD	   I am a kernel thread
+			PF_RANDOMIZE	   Randomize virtual address space
+			PF_SWAPWRITE	   Allowed to write to swap
+			PF_NO_SETAFFINITY  Userland is not allowed to meddle with cpus_allowed
+			PF_MCE_EARLY	   Early kill for mce process policy
+			PF_MUTEX_TESTER	   Thread belongs to the rt mutex tester
+			PF_FREEZER_SKIP	   Freezer should not count it as freezable
+			PF_SUSPEND_TASK	   This thread called freeze_processes and should not be frozen
+	
+		"""
 		sflags = []
 		for attr in dir(self):
 			if attr[:3] != "PF_":
