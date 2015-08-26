@@ -506,6 +506,24 @@ class pidstats:
 		return self.processes[pid]["stat"].is_bound_to_cpu()
 
 class interrupts:
+	"""
+	Information about IRQs in the system. A dictionary keyed by IRQ number
+	will have as its value another dictionary with "cpu", "type" and "users"
+	keys, with the SMP affinity mask, type of IRQ and the drivers associated
+	with each interrupt.
+
+	E.g.:
+
+	>>> import procfs
+	>>> interrupts = procfs.interrupts()
+	>>> thunderbolt_irq = interrupts.find_by_user("thunderbolt")
+	>>> print thunderbolt_irq
+	34
+	>>> thunderbolt = interrupts[thunderbolt_irq]
+	>>> print thunderbolt
+	{'affinity': [0, 1, 2, 3], 'type': 'PCI-MSI', 'cpu': [3495, 0, 81, 0], 'users': ['thunderbolt']}
+	>>>
+	"""
 	def __init__(self):
 		self.interrupts = {}
 		self.reload()
@@ -570,6 +588,21 @@ class interrupts:
 			return [ 0, ]
 
 	def find_by_user(self, user):
+		"""
+		Looks up a interrupt number by the name of one of its users"
+
+		E.g.:
+
+		>>> import procfs
+		>>> interrupts = procfs.interrupts()
+		>>> thunderbolt_irq = interrupts.find_by_user("thunderbolt")
+		>>> print thunderbolt_irq
+		34
+		>>> thunderbolt = interrupts[thunderbolt_irq]
+		>>> print thunderbolt
+		{'affinity': [0, 1, 2, 3], 'type': 'PCI-MSI', 'cpu': [3495, 0, 81, 0], 'users': ['thunderbolt']}
+		>>>
+		"""
 		for i in self.interrupts.keys():
 			if self.interrupts[i].has_key("users") and \
 			   user in self.interrupts[i]["users"]:
@@ -577,6 +610,21 @@ class interrupts:
 		return None
 
 	def find_by_user_regex(self, regex):
+		"""
+		Looks up a interrupt number by a regex that matches names of its users"
+
+		E.g.:
+
+		>>> import procfs
+		>>> import re
+		>>> interrupts = procfs.interrupts()
+		>>> usb_controllers = interrupts.find_by_user_regex(re.compile(".*hcd"))
+		>>> print usb_controllers
+		['22', '23', '31']
+		>>> print [ interrupts[irq]["users"] for irq in usb_controllers ]
+		[['ehci_hcd:usb4'], ['ehci_hcd:usb3'], ['xhci_hcd']]
+		>>>
+		"""
 		irqs = []
 		for i in self.interrupts.keys():
 			if not self.interrupts[i].has_key("users"):
