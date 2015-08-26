@@ -328,6 +328,31 @@ class process:
 		f.close()
 
 	def load_environ(self):
+		"""
+		Loads the environment variables for this process. The entries then
+		become available via the 'environ' member, or via the 'environ'
+		dict key when accessing as p["environ"].
+
+		E.g.:
+
+
+		>>> all_processes = procfs.pidstats()
+		>>> firefox_pid = all_processes.find_by_name("firefox")
+		>>> firefox_process = all_processes[firefox_pid[0]]
+		>>> print firefox_process["environ"]["PWD"]
+		/home/acme
+		>>> print len(firefox_process.environ.keys())
+		66
+		>>> print firefox_process["environ"]["SHELL"]
+		/bin/bash
+		>>> print firefox_process["environ"]["USERNAME"]
+		acme
+		>>> print firefox_process["environ"]["HOME"]
+		/home/acme
+		>>> print firefox_process["environ"]["MAIL"]
+		/var/spool/mail/acme
+		>>> 
+		"""
 		self.environ = {}
 		f = file("/proc/%d/environ" % self.pid)
 		for x in f.readline().split('\0'):
@@ -337,7 +362,13 @@ class process:
 		f.close()
 
 class pidstats:
+	"""
+	Provides access to all the processes in the system, to get a picture of
+	how many processes there are at any given moment.
 
+	The entries can be accessed as a dictionary, keyed by pid. Also there are
+	methods to find processes that match a given COMM or regular expression.
+	"""
 	def __init__(self, basedir = "/proc"):
 		self.basedir = basedir
 		self.processes = {}
@@ -469,6 +500,9 @@ class pidstats:
 		return priorities
 
 	def is_bound_to_cpu(self, pid):
+		"""
+		Checks if a given pid can't have its SMP affinity mask changed.
+		"""
 		return self.processes[pid]["stat"].is_bound_to_cpu()
 
 class interrupts:
