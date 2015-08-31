@@ -652,6 +652,36 @@ class cmdline:
 		f.close()
 
 class cpuinfo:
+	"""
+	Dictionary with information about CPUs in the system.
+
+	Please refer to 'man procfs(5)' for further information about the
+        '/proc/cpuinfo' file, that is the source of the information provided by this
+        class. The 'man lscpu(1)' also has information about a program that uses
+	the '/proc/cpuinfo' file.
+
+	Using this class one can obtain the number of CPUs in a system:
+
+	  >>> cpus = procfs.cpuinfo()
+          >>> print cpus.nr_cpus
+          4
+
+	It is also possible to figure out aspects of the CPU topology, such as
+	how many CPU physical sockets exists, i.e. groups of CPUs sharing components
+	such as CPU memory caches:
+
+	  >>> print len(cpus.sockets)
+	  1
+
+	Additionally dictionary with information common to all CPUs in the system is
+	available:
+
+	  >>> print cpus["model name"]
+          Intel(R) Core(TM) i7-3667U CPU @ 2.00GHz
+          >>> print cpus["cache size"]
+          4096 KB
+          >>>
+	"""
 	def __init__(self, filename="/proc/cpuinfo"):
 		self.tags = {}
 		self.nr_cpus = 0
@@ -777,6 +807,13 @@ class cpustat:
 				self.guest = int(fields[8])
 
 class cpusstats:
+	"""
+	Dictionary with information about CPUs in the system. First entry in the
+	dictionary gives an aggregate view of all CPUs, each other entry is about
+	separate CPUs. Please refer to 'man procfs(5)' for further information
+	about the '/proc/stat' file, that is the source of the information provided
+	by this class.
+	"""
 	def __init__(self, filename = "/proc/stat"):
 		self.entries = {}
 		self.time = None
