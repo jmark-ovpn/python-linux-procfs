@@ -777,6 +777,9 @@ class smaps:
 		self.entries.append(smaps_lib(lines))
 		return line
 
+	def __len__(self):
+		return len(self.entries)
+
 	def __getitem__(self, index):
 		return self.entries[index]
 
