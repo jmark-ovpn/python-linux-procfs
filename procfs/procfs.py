@@ -748,6 +748,11 @@ class smaps_lib:
 
 
 class smaps:
+	"""
+	List of libraries mapped by a process. Parses the lines in
+	the /proc/PID/smaps file, that is further documented in the
+	procfs(5) man page.
+	"""
 	def __init__(self, pid):
 		self.pid = pid
 		self.entries = []
