@@ -777,6 +777,9 @@ class smaps:
 		self.entries.append(smaps_lib(lines))
 		return line
 
+	def __getitem__(self, index):
+		return self.entries[index]
+
 	def reload(self):
 		f = file("/proc/%d/smaps" % self.pid)
 		line = None
