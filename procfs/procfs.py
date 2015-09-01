@@ -752,6 +752,25 @@ class smaps:
 	List of libraries mapped by a process. Parses the lines in
 	the /proc/PID/smaps file, that is further documented in the
 	procfs(5) man page.
+
+	Example: Listing the executable maps for the 'sshd' process:
+
+          >>> import procfs
+          >>> processes = procfs.pidstats()
+          >>> sshd = processes.find_by_name("sshd")
+          >>> sshd_maps = procfs.smaps(sshd[0])
+          >>> for i in range(len(sshd_maps)):
+          ...     if 'x' in sshd_maps[i].perms:
+          ...         print "%s: %s" % (sshd_maps[i].name, sshd_maps[i].perms)
+          ...
+          /usr/sbin/sshd: r-xp
+          /usr/lib64/libnss_files-2.20.so: r-xp
+          /usr/lib64/librt-2.20.so: r-xp
+          /usr/lib64/libkeyutils.so.1.5: r-xp
+          /usr/lib64/libkrb5support.so.0.1: r-xp
+          /usr/lib64/libfreebl3.so: r-xp
+          /usr/lib64/libpthread-2.20.so: r-xp
+	  ...
 	"""
 	def __init__(self, pid):
 		self.pid = pid
