@@ -530,6 +530,11 @@ class interrupts:
 	keys, with the SMP affinity mask, type of IRQ and the drivers associated
 	with each interrupt.
 
+	The information comes from the /proc/interrupts file, documented in
+	'man procfs(5)', for instance, the 'cpu' dict is an array with one entry
+	per CPU present in the sistem, each value being the number of interrupts
+	that took place per CPU.
+
 	E.g.:
 
 	>>> import procfs
