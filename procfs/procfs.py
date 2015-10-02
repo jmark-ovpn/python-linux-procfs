@@ -719,6 +719,15 @@ class cpuinfo:
 		self.nr_cores = ("cpu cores" in self.tags and int(self.tags["cpu cores"]) or 1) * self.nr_sockets
 
 class smaps_lib:
+	"""
+	Representation of an mmap in place for a process. Can be used to figure
+	out which processes have an library mapped, etc.
+
+	The 'perm' member can be used to figure out executable mmaps, i.e. libraries.
+
+	The 'vm_start' and 'vm_end' in turn can be used when trying to resolve
+	processor instruction pointer addresses to a symbol name in a library.
+	"""
 	def __init__(self, lines):
 		fields = lines[0].split()
 		self.vm_start, self.vm_end = map(lambda a: int(a, 16), fields[0].split("-"))
