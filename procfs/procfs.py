@@ -870,6 +870,15 @@ class cpustat:
 			if len(fields) > 8:
 				self.guest = int(fields[8])
 
+	def __repr__(self):
+		s = "< user: %s, nice: %s, system: %s, idle: %s, iowait: %s, irq: %s, softirq: %s" % \
+			(self.user, self.nice, self.system, self.idle, self.iowait, self.irq, self.softirq)
+		if hasattr(self, 'steal'):
+			s += ", steal: %d" % self.steal
+		if hasattr(self, 'guest'):
+			s += ", guest: %d" % self.guest
+		return s + ">"
+
 class cpusstats:
 	"""
 	Dictionary with information about CPUs in the system. First entry in the
