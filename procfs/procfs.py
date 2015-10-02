@@ -651,6 +651,12 @@ class cmdline:
 
 		f.close()
 
+	def __getitem__(self, key):
+		return self.options[key]
+
+	def keys(self):
+		return self.options.keys()
+
 class cpuinfo:
 	"""
 	Dictionary with information about CPUs in the system.
