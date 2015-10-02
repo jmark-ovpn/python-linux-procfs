@@ -351,7 +351,7 @@ class process:
 		/home/acme
 		>>> print firefox_process["environ"]["MAIL"]
 		/var/spool/mail/acme
-		>>> 
+		>>>
 		"""
 		self.environ = {}
 		f = file("/proc/%d/environ" % self.pid)
@@ -636,6 +636,25 @@ class interrupts:
 		return irqs
 
 class cmdline:
+	"""
+	Parses the kernel command line (/proc/cmdline), turning it into a dictionary."
+
+	Useful to figure out if some kernel boolean knob has been turned on, as well
+	as to find the value associated to other kernel knobs.
+
+	It can also be used to find out about parameters passed to the init process,
+	such as 'BOOT_IMAGE', etc.
+
+	E.g.:
+	>>> import procfs
+	>>> kcmd = procfs.cmdline()
+	>>> print kcmd.keys()
+	['LANG', 'BOOT_IMAGE', 'quiet', 'rhgb', 'rd.lvm.lv', 'ro', 'root']
+	>>> print kcmd["BOOT_IMAGE"]
+	/vmlinuz-4.3.0-rc1+
+	>>>
+	"""
+
 	def __init__(self):
 		self.options = {}
 		self.parse()
