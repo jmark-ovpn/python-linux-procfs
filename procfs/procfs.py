@@ -124,6 +124,9 @@ class pidstat:
 	def has_key(self, fieldname):
 		return self.fields.has_key(fieldname)
 
+	def items(self):
+		return self.fields
+
 	def __contains__(self, fieldname):
 		return fieldname in self.fields
 
@@ -250,6 +253,9 @@ class pidstatus:
 
 	def has_key(self, fieldname):
 		return self.fields.has_key(fieldname)
+
+	def items(self):
+		return self.fields
 
 	def __contains__(self, fieldname):
 		return fieldname in self.fields
@@ -389,6 +395,9 @@ class pidstats:
 
 	def has_key(self, key):
 		return self.processes.has_key(key)
+
+	def items(self):
+		return self.processes
 
 	def __contains__(self, key):
 		return key in self.processes
@@ -537,6 +546,9 @@ class interrupts:
 	def has_key(self, key):
 		return self.interrupts.has_key(str(key))
 
+	def items(self):
+		return self.interrupts
+
 	def __contains__(self, key):
 		return str(key) in self.interrupts
 
@@ -676,6 +688,9 @@ class cmdline:
 	def keys(self):
 		return self.options.keys()
 
+	def items(self):
+		return self.options
+
 class cpuinfo:
 	"""
 	Dictionary with information about CPUs in the system.
@@ -718,6 +733,9 @@ class cpuinfo:
 
 	def keys(self):
 		return self.tags.keys()
+
+	def items(self):
+		return self.tags
 
 	def parse(self, filename):
 		f = file(filename)
@@ -779,6 +797,9 @@ class smaps_lib:
 
 	def keys(self):
 		return self.tags.keys()
+
+	def items(self):
+		return self.tags
 
 
 class smaps:
@@ -905,6 +926,9 @@ class cpusstats:
 
 	def keys(self):
 		return self.entries.keys()
+
+	def items(self):
+		return self.entries
 
 	def reload(self):
 		last_entries = self.entries
