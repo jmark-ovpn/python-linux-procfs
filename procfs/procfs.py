@@ -121,6 +121,9 @@ class pidstat:
 	def keys(self):
 		return self.fields.keys()
 
+	def values(self):
+		return self.fields.values()
+
 	def has_key(self, fieldname):
 		return self.fields.has_key(fieldname)
 
@@ -250,6 +253,9 @@ class pidstatus:
 
 	def keys(self):
 		return self.fields.keys()
+
+	def values(self):
+		return self.fields.values()
 
 	def has_key(self, fieldname):
 		return self.fields.has_key(fieldname)
@@ -392,6 +398,9 @@ class pidstats:
 
 	def keys(self):
 		return self.processes.keys()
+
+	def values(self):
+		return self.processes.values()
 
 	def has_key(self, key):
 		return self.processes.has_key(key)
@@ -543,6 +552,9 @@ class interrupts:
 	def keys(self):
 		return self.interrupts.keys()
 
+	def values(self):
+		return self.interrupts.values()
+
 	def has_key(self, key):
 		return self.interrupts.has_key(str(key))
 
@@ -688,6 +700,9 @@ class cmdline:
 	def keys(self):
 		return self.options.keys()
 
+	def values(self):
+		return self.options.values()
+
 	def items(self):
 		return self.options
 
@@ -733,6 +748,9 @@ class cpuinfo:
 
 	def keys(self):
 		return self.tags.keys()
+
+	def values(self):
+		return self.tags.values()
 
 	def items(self):
 		return self.tags
@@ -797,6 +815,9 @@ class smaps_lib:
 
 	def keys(self):
 		return self.tags.keys()
+
+	def values(self):
+		return self.tags.values()
 
 	def items(self):
 		return self.tags
@@ -877,6 +898,12 @@ class smaps:
 		return result
 
 class cpustat:
+	"""
+	CPU statistics, obtained from a line in the '/proc/stat' file, Please
+	refer to 'man procfs(5)' for further information about the '/proc/stat'
+	file, that is the source of the information provided by this class.
+	"""
+
 	def __init__(self, fields):
 		self.name = fields[0]
 		(self.user,
@@ -926,6 +953,9 @@ class cpusstats:
 
 	def keys(self):
 		return self.entries.keys()
+
+	def values(self):
+		return self.entries.values()
 
 	def items(self):
 		return self.entries
