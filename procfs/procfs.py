@@ -412,6 +412,20 @@ class pidstats:
 		return key in self.processes
 
 	def reload(self):
+	"""
+	This operation will trow away the current dictionary contents, if any, and
+	read all the pid files from /proc/, instantiating a 'process' instance for
+	each of them.
+
+	This is a high overhead operation, and should be avoided if the perf python
+	binding can be used to detect when new threads appear and existing ones
+	terminate.
+
+	In RHEL it is found in the python-perf rpm package.
+
+	More information about the perf facilities can be found in the 'perf_event_open'
+	man page.
+	"""
 		del self.processes
 		self.processes = {}
 		pids = os.listdir(self.basedir)
