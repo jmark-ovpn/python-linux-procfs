@@ -2,7 +2,7 @@
 %{!?python_ver: %define python_ver %(%{__python} -c "import sys ; print sys.version[:3]")}
 
 Name: python-linux-procfs
-Version: 0.4.9
+Version: 0.4.10
 Release: 1%{?dist}
 License: GPLv2
 Summary: Linux /proc abstraction classes
@@ -42,6 +42,10 @@ rm -rf %{buildroot}
 %doc COPYING
 
 %changelog
+* Thu Dec 22 2016 Jiri Kastner <jkastner@redhat.com> - 0.4.10-1
+- fixed affinity parsing with cpu numbers greater than 31
+- added test for fix above
+
 * Thu Oct  8 2015 Arnaldo Carvalho de Melo <acme@redhat.com> - 0.4.9-1
 - Adds documentations to classes, more work to do on methods
 - Fixes parsing of users in /proc/interrupts users field
