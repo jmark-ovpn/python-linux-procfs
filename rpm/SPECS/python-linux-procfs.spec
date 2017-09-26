@@ -2,13 +2,13 @@
 %{!?python_ver: %define python_ver %(%{__python} -c "import sys ; print sys.version[:3]")}
 
 Name: python-linux-procfs
-Version: 0.4.10
+Version: 0.4.11
 Release: 1%{?dist}
 License: GPLv2
 Summary: Linux /proc abstraction classes
 Group: System Environment/Libraries
-Source: http://userweb.kernel.org/~acme/python-linux-procfs/%{name}-%{version}.tar.bz2
-URL: http://userweb.kernel.org/~acme/python-linux-procfs
+Source: https://cdn.kernel.org/pub/software/libs/python/%{name}/%{name}-%{version}.tar.xz
+URL: https://rt.wiki.kernel.org/index.php/Tuna
 BuildArch: noarch
 BuildRequires: python-devel
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
@@ -42,6 +42,9 @@ rm -rf %{buildroot}
 %doc COPYING
 
 %changelog
+* Tue Sep 26 2017 Jiri Kastner <jkastner@redhat.com> - 0.4.11-1
+- fixed rpmlint compliants (url, source)
+
 * Thu Dec 22 2016 Jiri Kastner <jkastner@redhat.com> - 0.4.10-1
 - fixed affinity parsing with cpu numbers greater than 31
 - added test for fix above
