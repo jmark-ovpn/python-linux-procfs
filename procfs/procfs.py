@@ -125,7 +125,7 @@ class pidstat:
 		return self.fields.values()
 
 	def has_key(self, fieldname):
-		return self.fields.has_key(fieldname)
+		return fieldname in self.fields
 
 	def items(self):
 		return self.fields
@@ -258,7 +258,7 @@ class pidstatus:
 		return self.fields.values()
 
 	def has_key(self, fieldname):
-		return self.fields.has_key(fieldname)
+		return fieldname in self.fields
 
 	def items(self):
 		return self.fields
@@ -403,7 +403,7 @@ class pidstats:
 		return self.processes.values()
 
 	def has_key(self, key):
-		return self.processes.has_key(key)
+		return key in self.processes
 
 	def items(self):
 		return self.processes
@@ -575,7 +575,7 @@ class interrupts:
 		return self.interrupts.values()
 
 	def has_key(self, key):
-		return self.interrupts.has_key(str(key))
+		return str(key) in self.interrupts
 
 	def items(self):
 		return self.interrupts
@@ -647,7 +647,7 @@ class interrupts:
 		>>>
 		"""
 		for i in self.interrupts.keys():
-			if self.interrupts[i].has_key("users") and \
+			if "users" in self.interrupts[i] and \
 			   user in self.interrupts[i]["users"]:
 				return i
 		return None
@@ -670,7 +670,7 @@ class interrupts:
 		"""
 		irqs = []
 		for i in self.interrupts.keys():
-			if not self.interrupts[i].has_key("users"):
+			if "users" not in self.interrupts[i]:
 				continue
 			for user in self.interrupts[i]["users"]:
 				if regex.match(user):

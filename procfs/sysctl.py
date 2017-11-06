@@ -23,7 +23,7 @@ class sysctl:
 		self.cache = {}
 
 	def __getitem__(self, key):
-		if not self.cache.has_key(key):
+		if key not in self.cache:
 			value = self.read(key)
 			if value == None:
 				return None
