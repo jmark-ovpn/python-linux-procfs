@@ -1,6 +1,6 @@
 #!/usr/bin/python
 from distutils.sysconfig import get_python_lib
-from distutils.core import setup
+from setuptools import setup
 from os.path import isfile, join
 import glob
 import os
@@ -23,4 +23,5 @@ setup(name="python-linux-procfs",
 Abstractions to extract information from the Linux kernel /proc files.
 """,
       packages = ["procfs"],
+      install_requires = ['six'],
       )
