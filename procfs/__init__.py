@@ -22,9 +22,11 @@ Copyright (c) 2008, 2009  Red Hat Inc.
 
 Abstractions to extract information from the Linux kernel /proc files.
 """
+from __future__ import absolute_import
+
 __author__ = "Arnaldo Carvalho de Melo <acme@redhat.com>"
 __license__ = "GPLv2 License"
 
-from procfs import *
-from sysctl import *
-from utilist import *
+from .procfs import *
+from .sysctl import *
+from .utilist import *

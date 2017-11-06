@@ -18,7 +18,11 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 
-import os, time, utilist
+from __future__ import absolute_import
+from __future__ import print_function
+import os, time
+from .utilist import bitmasklist
+from six.moves import range
 
 VERSION="0.3"
 
@@ -626,7 +630,7 @@ class interrupts:
 			f = open("/proc/irq/%s/smp_affinity" % irq)
 			line = f.readline()
 			f.close()
-			return utilist.bitmasklist(line, self.nr_cpus)
+			return bitmasklist(line, self.nr_cpus)
 		except IOError:
 			return [ 0, ]
 
