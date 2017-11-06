@@ -15,6 +15,7 @@
 #   General Public License for more details.
 
 import procfs, re, fnmatch, sys
+from functools import reduce
 
 ps = None
 
