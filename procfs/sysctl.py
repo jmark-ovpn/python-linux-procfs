@@ -45,7 +45,7 @@ class sysctl:
 
 	def read(self, key):
 		try:
-			f = file("/proc/sys/%s" % key.replace(".", "/"))
+			f = open("/proc/sys/%s" % key.replace(".", "/"))
 		except:
 			return None
 		value = f.readline().strip()
@@ -54,7 +54,7 @@ class sysctl:
 
 	def write(self, key, value):
 		try:
-			f = file("/proc/sys/%s" % key.replace(".", "/"), "w")
+			f = open("/proc/sys/%s" % key.replace(".", "/"), "w")
 		except:
 			return
 		f.write(value)

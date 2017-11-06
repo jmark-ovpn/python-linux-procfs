@@ -320,7 +320,7 @@ class process:
 		return hasattr(self, attr)
 
 	def load_cmdline(self):
-		f = file("/proc/%d/cmdline" % self.pid)
+		f = open("/proc/%d/cmdline" % self.pid)
 		self.cmdline = f.readline().strip().split('\0')[:-1]
 		f.close()
 
@@ -330,7 +330,7 @@ class process:
 		del self.threads[self.pid]
 
 	def load_cgroups(self):
-		f = file("/proc/%d/cgroup" % self.pid)
+		f = open("/proc/%d/cgroup" % self.pid)
 		self.cgroups = ""
 		for line in reversed(f.readlines()):
 			if len(self.cgroups):
@@ -366,7 +366,7 @@ class process:
 		>>>
 		"""
 		self.environ = {}
-		f = file("/proc/%d/environ" % self.pid)
+		f = open("/proc/%d/environ" % self.pid)
 		for x in f.readline().split('\0'):
 			if len(x) > 0:
 				y = x.split('=')
@@ -623,7 +623,7 @@ class interrupts:
 
 	def parse_affinity(self, irq):
 		try:
-			f = file("/proc/irq/%s/smp_affinity" % irq)
+			f = open("/proc/irq/%s/smp_affinity" % irq)
 			line = f.readline()
 			f.close()
 			return utilist.bitmasklist(line, self.nr_cpus)
@@ -703,7 +703,7 @@ class cmdline:
 		self.parse()
 
 	def parse(self):
-		f = file("/proc/cmdline")
+		f = open("/proc/cmdline")
 		for option in f.readline().strip().split():
 			fields = option.split("=")
 			if len(fields) == 1:
@@ -775,7 +775,7 @@ class cpuinfo:
 		return self.tags
 
 	def parse(self, filename):
-		f = file(filename)
+		f = open(filename)
 		for line in f.readlines():
 			line = line.strip()
 			if len(line) == 0:
@@ -898,7 +898,7 @@ class smaps:
 		return self.entries[index]
 
 	def reload(self):
-		f = file("/proc/%d/smaps" % self.pid)
+		f = open("/proc/%d/smaps" % self.pid)
 		line = None
 		while True:
 			line = self.parse_entry(f, line)
@@ -982,7 +982,7 @@ class cpusstats:
 	def reload(self):
 		last_entries = self.entries
 		self.entries = {}
-		f = file(self.filename)
+		f = open(self.filename)
 		for line in f.readlines():
 			fields = line.strip().split()
 			if fields[0][:3].lower() != "cpu":
