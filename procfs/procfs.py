@@ -814,7 +814,7 @@ class smaps_lib:
 	"""
 	def __init__(self, lines):
 		fields = lines[0].split()
-		self.vm_start, self.vm_end = map(lambda a: int(a, 16), fields[0].split("-"))
+		self.vm_start, self.vm_end = [int(a, 16) for a in fields[0].split("-")]
 		self.perms = fields[1]
 		self.offset = int(fields[2], 16)
 		self.major, self.minor = fields[3].split(":")

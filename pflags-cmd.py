@@ -16,6 +16,7 @@
 
 import procfs, re, fnmatch, sys
 from functools import reduce
+from six.moves import map
 
 ps = None
 
@@ -37,12 +38,12 @@ def main(argv):
 	ps = procfs.pidstats()
 
 	if (len(argv) > 1):
-		pids = reduce(lambda i, j: i + j, map(thread_mapper, argv[1].split(",")))
+		pids = reduce(lambda i, j: i + j, list(map(thread_mapper, argv[1].split(","))))
 	else:
 		pids = list(ps.processes.keys())
 
 	pids.sort()
-	len_comms = map(lambda pid: len(ps[pid]["stat"]["comm"]), pids)
+	len_comms = [len(ps[pid]["stat"]["comm"]) for pid in pids]
 	max_comm_len = max(len_comms)
 	del(len_comms)
 
@@ -59,7 +60,7 @@ def main(argv):
 			flags.remove("PF_FREEZER_NOSIG")
 		comm = ps[pid].stat["comm"]
 		flags.sort()
-		sflags = reduce(lambda i, j: "%s|%s" % (i, j), map(lambda a: a[3:],flags))
+		sflags = reduce(lambda i, j: "%s|%s" % (i, j), [a[3:] for a in flags])
 		print "%6d %*s %s" %(pid, max_comm_len, comm, sflags)
 
 if __name__ == '__main__':
