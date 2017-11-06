@@ -1022,32 +1022,32 @@ if __name__ == '__main__':
 	ints = interrupts()
 
 	for i in ints.interrupts.keys():
-		print "%s: %s" % (i, ints.interrupts[i])
+		print("%s: %s" % (i, ints.interrupts[i]))
 
 	options = cmdline()
 	for o in options.options.keys():
-		print "%s: %s" % (o, options.options[o])
+		print("%s: %s" % (o, options.options[o]))
 
 	cpu = cpuinfo()
-	print "\ncpuinfo data: %d processors" % cpu.nr_cpus
+	print("\ncpuinfo data: %d processors" % cpu.nr_cpus)
 	for tag in cpu.keys():
-		print "%s=%s" % (tag, cpu[tag])
+		print("%s=%s" % (tag, cpu[tag]))
 
-	print "smaps:\n" + ("-" * 40)
+	print("smaps:\n" + ("-" * 40))
 	s = smaps(int(sys.argv[1]))
 	for i in range(s.nr_entries):
-		print "%#x %s" % (s.entries[i].vm_start, s.entries[i].name)
-	print "-" * 40
+		print("%#x %s" % (s.entries[i].vm_start, s.entries[i].name))
+	print("-" * 40)
 	for a in s.find_by_name_fragment(sys.argv[2]):
-		print a["Size"]
+		print(a["Size"])
 
 	ps = pidstats()
-	print ps[1]
+	print(ps[1])
 
 	cs = cpusstats()
 	while True:
 		time.sleep(1)
 		cs.reload()
 		for cpu in cs:
-			print "%s: %d" % (cpu.name, cpu.usage)
-		print "-" * 10
+			print("%s: %d" % (cpu.name, cpu.usage))
+		print("-" * 10)

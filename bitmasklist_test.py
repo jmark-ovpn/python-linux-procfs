@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from __future__ import print_function
 from procfs import bitmasklist
 
 class bitmasklist_test:
@@ -22,16 +23,16 @@ class bitmasklist_test:
 
     # This is the function that actually runs the test
     def bitmasklist_test(self):
-        print "\n##################\n"
+        print("\n##################\n")
         cpu = bitmasklist(self.line, self.nr_entries)
-        print "Converted : ", self.line, "\nto ", cpu
+        print("Converted : ", self.line, "\nto ", cpu)
         if cpu == self.expected_result:
             self.result = 0
-            print "PASS"
+            print("PASS")
         else:
             self.result = 1
-            print "expected : ", self.expected_result
-            print "FAIL"
+            print("expected : ", self.expected_result)
+            print("FAIL")
         self.set_unit_test_result()
 
 # CPU 2

@@ -14,6 +14,7 @@
 #   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 #   General Public License for more details.
 
+from __future__ import print_function
 import procfs, re, fnmatch, sys
 from functools import reduce
 from six.moves import map
@@ -61,7 +62,7 @@ def main(argv):
 		comm = ps[pid].stat["comm"]
 		flags.sort()
 		sflags = reduce(lambda i, j: "%s|%s" % (i, j), [a[3:] for a in flags])
-		print "%6d %*s %s" %(pid, max_comm_len, comm, sflags)
+		print("%6d %*s %s" %(pid, max_comm_len, comm, sflags))
 
 if __name__ == '__main__':
 	main(sys.argv)
