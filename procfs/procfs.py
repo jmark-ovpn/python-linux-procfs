@@ -119,10 +119,10 @@ class pidstat:
 		return self.fields[fieldname]
 
 	def keys(self):
-		return self.fields.keys()
+		return list(self.fields.keys())
 
 	def values(self):
-		return self.fields.values()
+		return list(self.fields.values())
 
 	def has_key(self, fieldname):
 		return fieldname in self.fields
@@ -252,10 +252,10 @@ class pidstatus:
 		return self.fields[fieldname]
 
 	def keys(self):
-		return self.fields.keys()
+		return list(self.fields.keys())
 
 	def values(self):
-		return self.fields.values()
+		return list(self.fields.values())
 
 	def has_key(self, fieldname):
 		return fieldname in self.fields
@@ -397,10 +397,10 @@ class pidstats:
 			pass
 
 	def keys(self):
-		return self.processes.keys()
+		return list(self.processes.keys())
 
 	def values(self):
-		return self.processes.values()
+		return list(self.processes.values())
 
 	def has_key(self, key):
 		return key in self.processes
@@ -569,10 +569,10 @@ class interrupts:
 		return self.interrupts[str(key)]
 
 	def keys(self):
-		return self.interrupts.keys()
+		return list(self.interrupts.keys())
 
 	def values(self):
-		return self.interrupts.values()
+		return list(self.interrupts.values())
 
 	def has_key(self, key):
 		return str(key) in self.interrupts
@@ -717,10 +717,10 @@ class cmdline:
 		return self.options[key]
 
 	def keys(self):
-		return self.options.keys()
+		return list(self.options.keys())
 
 	def values(self):
-		return self.options.values()
+		return list(self.options.values())
 
 	def items(self):
 		return self.options
@@ -766,10 +766,10 @@ class cpuinfo:
 		return self.tags[key.lower()]
 
 	def keys(self):
-		return self.tags.keys()
+		return list(self.tags.keys())
 
 	def values(self):
-		return self.tags.values()
+		return list(self.tags.values())
 
 	def items(self):
 		return self.tags
@@ -833,10 +833,10 @@ class smaps_lib:
 		return self.tags[key.lower()]
 
 	def keys(self):
-		return self.tags.keys()
+		return list(self.tags.keys())
 
 	def values(self):
-		return self.tags.values()
+		return list(self.tags.values())
 
 	def items(self):
 		return self.tags
@@ -968,13 +968,13 @@ class cpusstats:
 		return self.entries[key]
 
 	def __len__(self):
-		return len(self.entries.keys())
+		return len(list(self.entries.keys()))
 
 	def keys(self):
-		return self.entries.keys()
+		return list(self.entries.keys())
 
 	def values(self):
-		return self.entries.values()
+		return list(self.entries.values())
 
 	def items(self):
 		return self.entries

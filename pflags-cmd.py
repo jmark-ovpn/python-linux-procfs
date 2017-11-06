@@ -39,7 +39,7 @@ def main(argv):
 	if (len(argv) > 1):
 		pids = reduce(lambda i, j: i + j, map(thread_mapper, argv[1].split(",")))
 	else:
-		pids = ps.processes.keys()
+		pids = list(ps.processes.keys())
 
 	pids.sort()
 	len_comms = map(lambda pid: len(ps[pid]["stat"]["comm"]), pids)

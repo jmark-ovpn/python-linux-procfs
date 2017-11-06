@@ -41,7 +41,7 @@ class sysctl:
 			self.cache[key] = value
 
 	def keys(self):
-		return self.cache.keys()
+		return list(self.cache.keys())
 
 	def read(self, key):
 		try:
