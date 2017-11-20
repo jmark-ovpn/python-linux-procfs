@@ -24,7 +24,7 @@ import os, time
 from .utilist import bitmasklist
 from six.moves import range
 
-VERSION="0.3"
+VERSION="0.5"
 
 def process_cmdline(pid_info):
 	"""

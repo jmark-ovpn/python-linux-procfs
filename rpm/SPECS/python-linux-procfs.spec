@@ -1,8 +1,9 @@
-%{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
-%{!?python_ver: %define python_ver %(%{__python} -c "import sys ; print sys.version[:3]")}
+%if 0%{?fedora}
+%global with_python3 1
+%endif
 
 Name: python-linux-procfs
-Version: 0.4.11
+Version: 0.5
 Release: 1%{?dist}
 License: GPLv2
 Summary: Linux /proc abstraction classes
@@ -10,38 +11,78 @@ Group: System Environment/Libraries
 Source: https://cdn.kernel.org/pub/software/libs/python/%{name}/%{name}-%{version}.tar.xz
 URL: https://rt.wiki.kernel.org/index.php/Tuna
 BuildArch: noarch
-BuildRequires: python-devel
+BuildRequires: python2-devel
+BuildRequires: python-setuptools
+%if 0%{?with_python3}
+BuildRequires: python3-devel
+BuildRequires: python3-setuptools
+%endif
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
-%description
+%global _description\
 Abstractions to extract information from the Linux kernel /proc files.
 
+%description %_description
+
+%package -n python2-linux-procfs
+Summary: %summary
+%{?python_provide:%python_provide python2-linux-procfs}
+
+Requires: python-six
+
+%description -n python2-linux-procfs %_description
+
+%if 0%{?with_python3}
+%package -n python3-linux-procfs
+Summary: %summary
+%{?python_provide:%python_provide python3-linux-procfs}
+
+Requires: python3-six
+
+%description -n python3-linux-procfs %_description
+%endif
+
 %prep
-%setup -q
+%autosetup -p1
 
 %build
-%{__python} setup.py build
+%py2_build
+%if 0%{?with_python3}
+%py3_build
+%endif
 
 %install
 rm -rf %{buildroot}
-%{__python} setup.py install --skip-build --root %{buildroot}
-mkdir -p %{buildroot}%{_bindir}
+%py2_install
+%if 0%{?with_python3}
+%py3_install
+%endif
 cp pflags-cmd.py %{buildroot}%{_bindir}/pflags
 
 %clean
 rm -rf %{buildroot}
 
-%files
+%files -n python2-linux-procfs
+%defattr(0755,root,root,0755)
+%{python2_sitelib}/procfs/
+%defattr(0644,root,root,0755)
+%{python2_sitelib}/python_linux_procfs*.egg-info
+%license COPYING
+
+%if 0%{?with_python3}
+%files -n python3-linux-procfs
 %defattr(0755,root,root,0755)
 %{_bindir}/pflags
-%{python_sitelib}/procfs/
+%{python3_sitelib}/procfs/
 %defattr(0644,root,root,0755)
-%if "%{python_ver}" >= "2.5"
-%{python_sitelib}/*.egg-info
+%{python3_sitelib}/python_linux_procfs*.egg-info
+%license COPYING
 %endif
-%doc COPYING
 
 %changelog
+* Mon Nov 20 2017 Jiri Kastner <jkastner@redhat.com> - 0.5-1
+- added python3 support
+
 * Tue Sep 26 2017 Jiri Kastner <jkastner@redhat.com> - 0.4.11-1
 - fixed rpmlint compliants (url, source)
 
