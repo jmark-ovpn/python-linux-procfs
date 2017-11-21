@@ -69,6 +69,9 @@ rm -rf %{buildroot}
 %defattr(0644,root,root,0755)
 %{python2_sitelib}/python_linux_procfs*.egg-info
 %license COPYING
+%if 0%{?without_python3}
+%{_bindir}/pflags
+%endif
 
 %if 0%{?with_python3}
 %files -n python3-linux-procfs
