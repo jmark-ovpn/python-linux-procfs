@@ -85,6 +85,7 @@ rm -rf %{buildroot}
 
 %changelog
 * Tue Nov 21 2017 Jiri Kastner <jkastner@redhat.com> - 0.5.1-1
+- missed snippet in specfile for python2 only
 - added scripts to setup.py, pflags renamed and added to setup.py
 
 * Mon Nov 20 2017 Jiri Kastner <jkastner@redhat.com> - 0.5-1
