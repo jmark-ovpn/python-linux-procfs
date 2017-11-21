@@ -1,9 +1,11 @@
 %if 0%{?fedora}
 %global with_python3 1
+%else
+%global without_python3 1
 %endif
 
 Name: python-linux-procfs
-Version: 0.5
+Version: 0.5.1
 Release: 1%{?dist}
 License: GPLv2
 Summary: Linux /proc abstraction classes
@@ -57,7 +59,6 @@ rm -rf %{buildroot}
 %if 0%{?with_python3}
 %py3_install
 %endif
-cp pflags-cmd.py %{buildroot}%{_bindir}/pflags
 
 %clean
 rm -rf %{buildroot}
@@ -80,6 +81,9 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Tue Nov 21 2017 Jiri Kastner <jkastner@redhat.com> - 0.5.1-1
+- added scripts to setup.py, pflags renamed and added to setup.py
+
 * Mon Nov 20 2017 Jiri Kastner <jkastner@redhat.com> - 0.5-1
 - added python3 support
 

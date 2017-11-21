@@ -23,5 +23,6 @@ setup(name="python-linux-procfs",
 Abstractions to extract information from the Linux kernel /proc files.
 """,
       packages = ["procfs"],
+      scripts = ['pflags'],
       install_requires = ['six'],
       )
