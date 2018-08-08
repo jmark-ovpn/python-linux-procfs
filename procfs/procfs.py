@@ -210,6 +210,22 @@ class pidstat:
 
 		return sflags
 
+def cannot_set_affinity(self, pid):
+                PF_NO_SETAFFINITY = 0x04000000
+                try:
+                        return int(self.processes[pid]["stat"]["flags"]) & \
+                                PF_NO_SETAFFINITY and True or False
+                except:
+                        return True
+
+def cannot_set_thread_affinity(self, pid, tid):
+                PF_NO_SETAFFINITY = 0x04000000
+                try:
+                        return int(self.processes[pid].threads[tid]["stat"]["flags"]) & \
+                                PF_NO_SETAFFINITY and True or False
+                except:
+                        return True
+
 class pidstatus:
 	"""
 	Provides a dictionary to access the fields in the per process /proc/PID/status
