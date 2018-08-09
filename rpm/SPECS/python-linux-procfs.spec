@@ -5,7 +5,7 @@
 %endif
 
 Name: python-linux-procfs
-Version: 0.5.1
+Version: 0.6
 Release: 1%{?dist}
 License: GPLv2
 Summary: Linux /proc abstraction classes
@@ -66,12 +66,12 @@ rm -rf %{buildroot}
 %files -n python2-linux-procfs
 %defattr(0755,root,root,0755)
 %{python2_sitelib}/procfs/
-%defattr(0644,root,root,0755)
-%{python2_sitelib}/python_linux_procfs*.egg-info
-%license COPYING
 %if 0%{?without_python3}
 %{_bindir}/pflags
 %endif
+%defattr(0644,root,root,0755)
+%{python2_sitelib}/python_linux_procfs*.egg-info
+%license COPYING
 
 %if 0%{?with_python3}
 %files -n python3-linux-procfs
@@ -84,6 +84,9 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Thu Aug  9 2018 Jiri Kastner <jkastner@redhat.com> - 0.6-1
+- moved cannot)set*affinity calls from tuna
+
 * Tue Nov 21 2017 Jiri Kastner <jkastner@redhat.com> - 0.5.1-1
 - missed snippet in specfile for python2 only
 - added scripts to setup.py, pflags renamed and added to setup.py
