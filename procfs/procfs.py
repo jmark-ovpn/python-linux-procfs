@@ -21,6 +21,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
 import os, time
+from functools import reduce
 from .utilist import bitmasklist
 from six.moves import range
 
