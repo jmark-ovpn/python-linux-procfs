@@ -459,12 +459,15 @@ class pidstats:
 			self.processes[pid] = process(pid, self.basedir)
 
 	def reload_threads(self):
+		to_remove = []
 		for pid in self.processes.keys():
 			try:
 				self.processes[pid].load_threads()
 			except OSError:
 				# process vanished, remove it
-				del self.processes[pid]
+				to_remove.append(pid)
+		for pid in to_remove:
+			del self.processes[pid]
 
 	def find_by_name(self, name):
 		name = name[:15]
