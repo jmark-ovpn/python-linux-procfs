@@ -5,7 +5,7 @@
 %endif
 
 Name: python-linux-procfs
-Version: 0.6
+Version: 0.6.1
 Release: 1%{?dist}
 License: GPLv2
 Summary: Linux /proc abstraction classes
@@ -84,6 +84,9 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Fri Jan 11 2019 Jiri Kastner <jkastner@redhat.com> - 0.6.1-1
+- python3 fixes
+
 * Thu Aug  9 2018 Jiri Kastner <jkastner@redhat.com> - 0.6-1
 - moved cannot)set*affinity calls from tuna
 
