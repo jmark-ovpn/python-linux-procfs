@@ -18,14 +18,12 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 
-
-
 import os, time
 from functools import reduce
-from utilist import bitmasklist
 from six.moves import range
+from utilist import bitmasklist
 
-VERSION="0.5"
+VERSION = "0.5"
 
 def process_cmdline(pid_info):
     """
@@ -104,7 +102,7 @@ class pidstat:
     PF_FREEZER_NOSIG = 0x80000000
     PF_SUSPEND_TASK     = 0x80000000 # /* this thread called freeze_processes and should not be frozen */
 
-    proc_stat_fields = [ "pid", "comm", "state", "ppid", "pgrp", "session",
+    proc_stat_fields = ["pid", "comm", "state", "ppid", "pgrp", "session",
                  "tty_nr", "tpgid", "flags", "minflt", "cminflt",
                  "majflt", "cmajflt", "utime", "stime", "cutime",
                  "cstime", "priority", "nice", "num_threads",
@@ -114,9 +112,9 @@ class pidstat:
                  "sigignore", "sigcatch", "wchan", "nswap",
                  "cnswap", "exit_signal", "processor",
                  "rt_priority", "policy",
-                 "delayacct_blkio_ticks", "environ" ]
+                 "delayacct_blkio_ticks", "environ"]
 
-    def __init__(self, pid, basedir = "/proc"):
+    def __init__(self, pid, basedir="/proc"):
         self.pid = pid
         self.load(basedir)
 
@@ -138,7 +136,7 @@ class pidstat:
     def __contains__(self, fieldname):
         return fieldname in self.fields
 
-    def load(self, basedir = "/proc"):
+    def load(self, basedir="/proc"):
         f = open("%s/%d/stat" % (basedir, self.pid))
         fields = f.readline().strip().split(') ')
         f.close()
@@ -212,20 +210,20 @@ class pidstat:
         return sflags
 
 def cannot_set_affinity(self, pid):
-                PF_NO_SETAFFINITY = 0x04000000
-                try:
-                        return int(self.processes[pid]["stat"]["flags"]) & \
-                                PF_NO_SETAFFINITY and True or False
-                except:
-                        return True
+    PF_NO_SETAFFINITY = 0x04000000
+    try:
+        return int(self.processes[pid]["stat"]["flags"]) & \
+          PF_NO_SETAFFINITY and True or False
+    except:
+        return True
 
 def cannot_set_thread_affinity(self, pid, tid):
-                PF_NO_SETAFFINITY = 0x04000000
-                try:
-                        return int(self.processes[pid].threads[tid]["stat"]["flags"]) & \
-                                PF_NO_SETAFFINITY and True or False
-                except:
-                        return True
+    PF_NO_SETAFFINITY = 0x04000000
+    try:
+        return int(self.processes[pid].threads[tid]["stat"]["flags"]) & \
+          PF_NO_SETAFFINITY and True or False
+    except:
+        return True
 
 class pidstatus:
     """
@@ -265,7 +263,7 @@ class pidstatus:
         line/field.
     """
 
-    def __init__(self, pid, basedir = "/proc"):
+    def __init__(self, pid, basedir="/proc"):
         self.pid = pid
         self.load(basedir)
 
@@ -287,7 +285,7 @@ class pidstatus:
     def __contains__(self, fieldname):
         return fieldname in self.fields
 
-    def load(self, basedir = "/proc"):
+    def load(self, basedir="/proc"):
         f = open("%s/%d/status" % (basedir, self.pid))
         self.fields = {}
         for line in f.readlines():
@@ -310,7 +308,7 @@ class process:
     and procfs.pidstatus for further info about those classes.
     """
 
-    def __init__(self, pid, basedir = "/proc"):
+    def __init__(self, pid, basedir="/proc"):
         self.pid = pid
         self.basedir = basedir
 
@@ -402,7 +400,7 @@ class pidstats:
     The entries can be accessed as a dictionary, keyed by pid. Also there are
     methods to find processes that match a given COMM or regular expression.
     """
-    def __init__(self, basedir = "/proc"):
+    def __init__(self, basedir="/proc"):
         self.basedir = basedir
         self.processes = {}
         self.reload()
@@ -512,7 +510,7 @@ class pidstats:
 
     def get_per_cpu_rtprios(self, basename):
         cpu = 0
-        priorities=""
+        priorities = ""
         processed_pids = []
         while True:
             name = "%s/%d" % (basename, cpu)
@@ -535,7 +533,7 @@ class pidstats:
 
     def get_rtprios(self, name):
         cpu = 0
-        priorities=""
+        priorities = ""
         processed_pids = []
         while True:
             pids = self.find_by_name(name)
@@ -652,7 +650,7 @@ class interrupts:
             f.close()
             return bitmasklist(line, self.nr_cpus)
         except IOError:
-            return [ 0, ]
+            return [0, ]
 
     def find_by_user(self, user):
         """
@@ -802,7 +800,7 @@ class cpuinfo:
         f = open(filename)
         for line in f.readlines():
             line = line.strip()
-            if len(line) == 0:
+            if not line:
                 continue
             fields = line.split(":")
             tagname = fields[0].strip().lower()
@@ -978,7 +976,7 @@ class cpusstats:
     about the '/proc/stat' file, that is the source of the information provided
     by this class.
     """
-    def __init__(self, filename = "/proc/stat"):
+    def __init__(self, filename="/proc/stat"):
         self.entries = {}
         self.time = None
         self.hertz = os.sysconf(2)
