@@ -25,7 +25,7 @@ class sysctl:
     def __getitem__(self, key):
         if key not in self.cache:
             value = self.read(key)
-            if value == None:
+            if value is None:
                 return None
             self.cache[key] = value
 
@@ -34,7 +34,7 @@ class sysctl:
     def __setitem__(self, key, value):
         oldvalue = self[key]
 
-        if oldvalue == None:
+        if oldvalue is None:
             raise IOError
         elif oldvalue != value:
             self.write(key, value)
@@ -64,5 +64,5 @@ class sysctl:
         for key in list(self.cache.keys()):
             del self.cache[key]
             value = self.read(key)
-            if value != None:
+            if value is not None:
                 self.cache[key] = value
