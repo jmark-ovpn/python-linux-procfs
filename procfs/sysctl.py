@@ -61,7 +61,7 @@ class sysctl:
         f.close()
 
     def refresh(self):
-        for key in self.cache.keys():
+        for key in list(self.cache.keys()):
             del self.cache[key]
             value = self.read(key)
             if value != None:
