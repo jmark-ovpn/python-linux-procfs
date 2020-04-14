@@ -18,11 +18,11 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 
-from __future__ import absolute_import
-from __future__ import print_function
+
+
 import os, time
 from functools import reduce
-from .utilist import bitmasklist
+from utilist import bitmasklist
 from six.moves import range
 
 VERSION="0.5"
@@ -460,7 +460,7 @@ class pidstats:
 
     def reload_threads(self):
         to_remove = []
-        for pid in self.processes.keys():
+        for pid in list(self.processes.keys()):
             try:
                 self.processes[pid].load_threads()
             except OSError:
@@ -472,7 +472,7 @@ class pidstats:
     def find_by_name(self, name):
         name = name[:15]
         pids = []
-        for pid in self.processes.keys():
+        for pid in list(self.processes.keys()):
             try:
                 if name == self.processes[pid]["stat"]["comm"]:
                     pids.append(pid)
@@ -486,7 +486,7 @@ class pidstats:
 
     def find_by_regex(self, regex):
         pids = []
-        for pid in self.processes.keys():
+        for pid in list(self.processes.keys()):
             try:
                 if regex.match(self.processes[pid]["stat"]["comm"]):
                     pids.append(pid)
@@ -499,7 +499,7 @@ class pidstats:
 
     def find_by_cmdline_regex(self, regex):
         pids = []
-        for pid in self.processes.keys():
+        for pid in list(self.processes.keys()):
             try:
                 if regex.match(process_cmdline(self.processes[pid])):
                     pids.append(pid)
@@ -670,7 +670,7 @@ class interrupts:
         {'affinity': [0, 1, 2, 3], 'type': 'PCI-MSI', 'cpu': [3495, 0, 81, 0], 'users': ['thunderbolt']}
         >>>
         """
-        for i in self.interrupts.keys():
+        for i in list(self.interrupts.keys()):
             if "users" in self.interrupts[i] and \
                user in self.interrupts[i]["users"]:
                 return i
@@ -693,7 +693,7 @@ class interrupts:
         >>>
         """
         irqs = []
-        for i in self.interrupts.keys():
+        for i in list(self.interrupts.keys()):
             if "users" not in self.interrupts[i]:
                 continue
             for user in self.interrupts[i]["users"]:
@@ -1023,7 +1023,7 @@ class cpusstats:
         if last_entries:
             delta_sec = self.time - last_time
             interval_hz = delta_sec * self.hertz
-            for cpu in self.entries.keys():
+            for cpu in list(self.entries.keys()):
                 if cpu not in last_entries:
                     curr.usage = 0
                     continue
@@ -1041,16 +1041,16 @@ if __name__ == '__main__':
 
     ints = interrupts()
 
-    for i in ints.interrupts.keys():
+    for i in list(ints.interrupts.keys()):
         print("%s: %s" % (i, ints.interrupts[i]))
 
     options = cmdline()
-    for o in options.options.keys():
+    for o in list(options.options.keys()):
         print("%s: %s" % (o, options.options[o]))
 
     cpu = cpuinfo()
     print("\ncpuinfo data: %d processors" % cpu.nr_cpus)
-    for tag in cpu.keys():
+    for tag in list(cpu.keys()):
         print("%s=%s" % (tag, cpu[tag]))
 
     print("smaps:\n" + ("-" * 40))
