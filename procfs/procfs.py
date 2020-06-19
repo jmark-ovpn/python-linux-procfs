@@ -22,8 +22,17 @@ import os, time
 from functools import reduce
 from six.moves import range
 from utilist import bitmasklist
+import platform
+import re
 
 VERSION = "0.5"
+
+def is_s390():
+    machine = platform.machine()
+    if re.search('s390', machine):
+        return True
+    else:
+        return False
 
 def process_cmdline(pid_info):
     """
@@ -805,6 +814,9 @@ class cpuinfo:
             fields = line.split(":")
             tagname = fields[0].strip().lower()
             if tagname == "processor":
+                self.nr_cpus += 1
+                continue
+            elif is_s390() and tagname == "cpu number":
                 self.nr_cpus += 1
                 continue
             elif tagname == "core id":
