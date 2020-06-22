@@ -5,7 +5,7 @@
 %endif
 
 Name: python-linux-procfs
-Version: 0.6.1
+Version: 0.6.2
 Release: 1%{?dist}
 License: GPLv2
 Summary: Linux /proc abstraction classes
@@ -84,6 +84,11 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Mon Jun 22 2020 John Kacur <jkacur@redhat.com> - 0.6.2-1
+- Add bitmasklist_test
+- clean-ups for recent python formating regarding spacing, tabs, etc
+- Fix to parse the number of cpus correctly on s390(x)
+
 * Fri Jan 11 2019 Jiri Kastner <jkastner@redhat.com> - 0.6.1-1
 - python3 fixes
 
