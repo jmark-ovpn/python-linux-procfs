@@ -21,7 +21,7 @@
 import os, time
 from functools import reduce
 from six.moves import range
-from utilist import bitmasklist
+from procfs.utilist import bitmasklist
 import platform
 import re
 
