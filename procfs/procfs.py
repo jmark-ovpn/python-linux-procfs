@@ -21,10 +21,10 @@
 import os
 import time
 from functools import reduce
-from six.moves import range
-from procfs.utilist import bitmasklist
 import platform
 import re
+from six.moves import range
+from procfs.utilist import bitmasklist
 
 VERSION = "0.5"
 
@@ -370,7 +370,7 @@ class process:
         f = open("/proc/%d/cgroup" % self.pid)
         self.cgroups = ""
         for line in reversed(f.readlines()):
-            if len(self.cgroups):
+            if len(self.cgroups) != 0:
                 self.cgroups = self.cgroups + "," + line[:-1]
             else:
                 self.cgroups = line[:-1]
@@ -833,10 +833,10 @@ class cpuinfo:
             if tagname == "processor":
                 self.nr_cpus += 1
                 continue
-            elif is_s390() and tagname == "cpu number":
+            if is_s390() and tagname == "cpu number":
                 self.nr_cpus += 1
                 continue
-            elif tagname == "core id":
+            if tagname == "core id":
                 continue
             self.tags[tagname] = fields[1].strip()
             if tagname == "physical id":
