@@ -18,7 +18,8 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 
-import os, time
+import os
+import time
 from functools import reduce
 from six.moves import range
 from procfs.utilist import bitmasklist
@@ -27,12 +28,14 @@ import re
 
 VERSION = "0.5"
 
+
 def is_s390():
     machine = platform.machine()
     if re.search('s390', machine):
         return True
     else:
         return False
+
 
 def process_cmdline(pid_info):
     """
@@ -43,6 +46,7 @@ def process_cmdline(pid_info):
         return reduce(lambda a, b: a + " %s" % b, pid_info["cmdline"]).strip()
 
     return pid_info["stat"]["comm"]
+
 
 class pidstat:
     """Provides a dictionary to access the fields in the per process /proc/PID/stat
@@ -74,54 +78,57 @@ class pidstat:
     # Entries with the same value, the one with a comment after it is the
     # more recent, having replaced the other name in v4.1-rc kernel times.
 
-    PF_ALIGNWARN     = 0x00000001
-    PF_STARTING     = 0x00000002
-    PF_EXITING     = 0x00000004
-    PF_EXITPIDONE     = 0x00000008
-    PF_VCPU         = 0x00000010
-    PF_WQ_WORKER     = 0x00000020 # /* I'm a workqueue worker */
-    PF_FORKNOEXEC     = 0x00000040
-    PF_MCE_PROCESS     = 0x00000080 # /* process policy on mce errors */
-    PF_SUPERPRIV     = 0x00000100
-    PF_DUMPCORE     = 0x00000200
-    PF_SIGNALED     = 0x00000400
-    PF_MEMALLOC     = 0x00000800
-    PF_NPROC_EXCEEDED= 0x00001000 # /* set_user noticed that RLIMIT_NPROC was exceeded */
-    PF_FLUSHER     = 0x00001000
-    PF_USED_MATH     = 0x00002000
-    PF_USED_ASYNC     = 0x00004000 # /* used async_schedule*(), used by module init */
-    PF_NOFREEZE     = 0x00008000
-    PF_FROZEN     = 0x00010000
-    PF_FSTRANS     = 0x00020000
-    PF_KSWAPD     = 0x00040000
-    PF_MEMALLOC_NOIO = 0x00080000 # /* Allocating memory without IO involved */
-    PF_SWAPOFF     = 0x00080000
+    PF_ALIGNWARN = 0x00000001
+    PF_STARTING = 0x00000002
+    PF_EXITING = 0x00000004
+    PF_EXITPIDONE = 0x00000008
+    PF_VCPU = 0x00000010
+    PF_WQ_WORKER = 0x00000020  # /* I'm a workqueue worker */
+    PF_FORKNOEXEC = 0x00000040
+    PF_MCE_PROCESS = 0x00000080  # /* process policy on mce errors */
+    PF_SUPERPRIV = 0x00000100
+    PF_DUMPCORE = 0x00000200
+    PF_SIGNALED = 0x00000400
+    PF_MEMALLOC = 0x00000800
+    # /* set_user noticed that RLIMIT_NPROC was exceeded */
+    PF_NPROC_EXCEEDED = 0x00001000
+    PF_FLUSHER = 0x00001000
+    PF_USED_MATH = 0x00002000
+    PF_USED_ASYNC = 0x00004000  # /* used async_schedule*(), used by module init */
+    PF_NOFREEZE = 0x00008000
+    PF_FROZEN = 0x00010000
+    PF_FSTRANS = 0x00020000
+    PF_KSWAPD = 0x00040000
+    PF_MEMALLOC_NOIO = 0x00080000  # /* Allocating memory without IO involved */
+    PF_SWAPOFF = 0x00080000
     PF_LESS_THROTTLE = 0x00100000
-    PF_KTHREAD     = 0x00200000
-    PF_RANDOMIZE     = 0x00400000
-    PF_SWAPWRITE     = 0x00800000
-    PF_SPREAD_PAGE     = 0x01000000
-    PF_SPREAD_SLAB     = 0x02000000
-    PF_THREAD_BOUND     = 0x04000000
-    PF_NO_SETAFFINITY = 0x04000000 # /* Userland is not allowed to meddle with cpus_allowed */
-    PF_MCE_EARLY     = 0x08000000 # /* Early kill for mce process policy */
-    PF_MEMPOLICY     = 0x10000000
-    PF_MUTEX_TESTER     = 0x20000000
-    PF_FREEZER_SKIP     = 0x40000000
+    PF_KTHREAD = 0x00200000
+    PF_RANDOMIZE = 0x00400000
+    PF_SWAPWRITE = 0x00800000
+    PF_SPREAD_PAGE = 0x01000000
+    PF_SPREAD_SLAB = 0x02000000
+    PF_THREAD_BOUND = 0x04000000
+    # /* Userland is not allowed to meddle with cpus_allowed */
+    PF_NO_SETAFFINITY = 0x04000000
+    PF_MCE_EARLY = 0x08000000  # /* Early kill for mce process policy */
+    PF_MEMPOLICY = 0x10000000
+    PF_MUTEX_TESTER = 0x20000000
+    PF_FREEZER_SKIP = 0x40000000
     PF_FREEZER_NOSIG = 0x80000000
-    PF_SUSPEND_TASK     = 0x80000000 # /* this thread called freeze_processes and should not be frozen */
+    # /* this thread called freeze_processes and should not be frozen */
+    PF_SUSPEND_TASK = 0x80000000
 
     proc_stat_fields = ["pid", "comm", "state", "ppid", "pgrp", "session",
-                 "tty_nr", "tpgid", "flags", "minflt", "cminflt",
-                 "majflt", "cmajflt", "utime", "stime", "cutime",
-                 "cstime", "priority", "nice", "num_threads",
-                 "itrealvalue", "starttime", "vsize", "rss",
-                 "rlim", "startcode", "endcode", "startstack",
-                 "kstkesp", "kstkeip", "signal", "blocked",
-                 "sigignore", "sigcatch", "wchan", "nswap",
-                 "cnswap", "exit_signal", "processor",
-                 "rt_priority", "policy",
-                 "delayacct_blkio_ticks", "environ"]
+                        "tty_nr", "tpgid", "flags", "minflt", "cminflt",
+                        "majflt", "cmajflt", "utime", "stime", "cutime",
+                        "cstime", "priority", "nice", "num_threads",
+                        "itrealvalue", "starttime", "vsize", "rss",
+                        "rlim", "startcode", "endcode", "startstack",
+                        "kstkesp", "kstkeip", "signal", "blocked",
+                        "sigignore", "sigcatch", "wchan", "nswap",
+                        "cnswap", "exit_signal", "processor",
+                        "rt_priority", "policy",
+                        "delayacct_blkio_ticks", "environ"]
 
     def __init__(self, pid, basedir="/proc"):
         self.pid = pid
@@ -218,21 +225,24 @@ class pidstat:
 
         return sflags
 
+
 def cannot_set_affinity(self, pid):
     PF_NO_SETAFFINITY = 0x04000000
     try:
         return int(self.processes[pid]["stat"]["flags"]) & \
-          PF_NO_SETAFFINITY and True or False
+            PF_NO_SETAFFINITY and True or False
     except:
         return True
+
 
 def cannot_set_thread_affinity(self, pid, tid):
     PF_NO_SETAFFINITY = 0x04000000
     try:
         return int(self.processes[pid].threads[tid]["stat"]["flags"]) & \
-          PF_NO_SETAFFINITY and True or False
+            PF_NO_SETAFFINITY and True or False
     except:
         return True
+
 
 class pidstatus:
     """
@@ -308,6 +318,7 @@ class pidstatus:
             except:
                 self.fields[name] = value
         f.close()
+
 
 class process:
     """
@@ -401,6 +412,7 @@ class process:
                 self.environ[y[0]] = y[1]
         f.close()
 
+
 class pidstats:
     """
     Provides access to all the processes in the system, to get a picture of
@@ -409,6 +421,7 @@ class pidstats:
     The entries can be accessed as a dictionary, keyed by pid. Also there are
     methods to find processes that match a given COMM or regular expression.
     """
+
     def __init__(self, basedir="/proc"):
         self.basedir = basedir
         self.processes = {}
@@ -568,6 +581,7 @@ class pidstats:
         """
         return self.processes[pid]["stat"].is_bound_to_cpu()
 
+
 class interrupts:
     """
     Information about IRQs in the system. A dictionary keyed by IRQ number
@@ -592,6 +606,7 @@ class interrupts:
     {'affinity': [0, 1, 2, 3], 'type': 'PCI-MSI', 'cpu': [3495, 0, 81, 0], 'users': ['thunderbolt']}
     >>>
     """
+
     def __init__(self):
         self.interrupts = {}
         self.reload()
@@ -647,7 +662,8 @@ class interrupts:
                 dict["type"] = fields[self.nr_cpus]
                 # look if there are users (interrupts 3 and 4 haven't)
                 if nr_fields > self.nr_cpus + 1:
-                    dict["users"] = [a.strip() for a in fields[nr_fields - 1].split(',')]
+                    dict["users"] = [a.strip()
+                                     for a in fields[nr_fields - 1].split(',')]
                 else:
                     dict["users"] = []
         return dict
@@ -709,6 +725,7 @@ class interrupts:
                     break
         return irqs
 
+
 class cmdline:
     """
     Parses the kernel command line (/proc/cmdline), turning it into a dictionary."
@@ -756,6 +773,7 @@ class cmdline:
     def items(self):
         return self.options
 
+
 class cpuinfo:
     """
     Dictionary with information about CPUs in the system.
@@ -787,6 +805,7 @@ class cpuinfo:
           4096 KB
           >>>
     """
+
     def __init__(self, filename="/proc/cpuinfo"):
         self.tags = {}
         self.nr_cpus = 0
@@ -829,8 +848,11 @@ class cpuinfo:
 
         f.close()
         self.nr_sockets = self.sockets and len(self.sockets) or \
-                  (self.nr_cpus / ("siblings" in self.tags and int(self.tags["siblings"]) or 1))
-        self.nr_cores = ("cpu cores" in self.tags and int(self.tags["cpu cores"]) or 1) * self.nr_sockets
+            (self.nr_cpus /
+             ("siblings" in self.tags and int(self.tags["siblings"]) or 1))
+        self.nr_cores = ("cpu cores" in self.tags and int(
+            self.tags["cpu cores"]) or 1) * self.nr_sockets
+
 
 class smaps_lib:
     """
@@ -842,6 +864,7 @@ class smaps_lib:
     The 'vm_start' and 'vm_end' in turn can be used when trying to resolve
     processor instruction pointer addresses to a symbol name in a library.
     """
+
     def __init__(self, lines):
         fields = lines[0].split()
         self.vm_start, self.vm_end = [int(a, 16) for a in fields[0].split("-")]
@@ -901,6 +924,7 @@ class smaps:
           /usr/lib64/libpthread-2.20.so: r-xp
       ...
     """
+
     def __init__(self, pid):
         self.pid = pid
         self.entries = []
@@ -946,9 +970,10 @@ class smaps:
         for i in range(self.nr_entries):
             if self.entries[i].name and \
                self.entries[i].name.find(fragment) >= 0:
-                   result.append(self.entries[i])
+                result.append(self.entries[i])
 
         return result
+
 
 class cpustat:
     """
@@ -973,12 +998,14 @@ class cpustat:
 
     def __repr__(self):
         s = "< user: %s, nice: %s, system: %s, idle: %s, iowait: %s, irq: %s, softirq: %s" % \
-            (self.user, self.nice, self.system, self.idle, self.iowait, self.irq, self.softirq)
+            (self.user, self.nice, self.system, self.idle,
+             self.iowait, self.irq, self.softirq)
         if hasattr(self, 'steal'):
             s += ", steal: %d" % self.steal
         if hasattr(self, 'guest'):
             s += ", guest: %d" % self.guest
         return s + ">"
+
 
 class cpusstats:
     """
@@ -988,6 +1015,7 @@ class cpusstats:
     about the '/proc/stat' file, that is the source of the information provided
     by this class.
     """
+
     def __init__(self, filename="/proc/stat"):
         self.entries = {}
         self.time = None
@@ -1045,6 +1073,7 @@ class cpusstats:
                 curr.usage = (delta / interval_hz) * 100
                 if curr.usage > 100:
                     curr.usage = 100
+
 
 if __name__ == '__main__':
     import sys
