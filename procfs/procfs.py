@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#!/usr/bin/python3
 # -*- python -*-
 # -*- coding: utf-8 -*-
 #
@@ -30,11 +30,9 @@ VERSION = "0.5"
 
 
 def is_s390():
+    """ Return True if running on s390 or s390x """
     machine = platform.machine()
-    if re.search('s390', machine):
-        return True
-    else:
-        return False
+    return bool(re.search('s390', machine))
 
 
 def process_cmdline(pid_info):
