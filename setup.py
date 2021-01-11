@@ -11,7 +11,7 @@ if isfile("MANIFEST"):
 PYTHONLIB = join(get_python_lib(standard_lib=1, prefix=''), 'site-packages')
 
 setup(name="python-linux-procfs",
-    version = "0.6.2",
+    version = "0.6.3",
     description = "Linux /proc abstraction classes",
     author = "Arnaldo Carvalho de Melo",
     author_email = "acme@redhat.com",

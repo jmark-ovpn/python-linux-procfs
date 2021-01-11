@@ -5,7 +5,7 @@
 %endif
 
 Name: python-linux-procfs
-Version: 0.6.2
+Version: 0.6.3
 Release: 1%{?dist}
 License: GPLv2
 Summary: Linux /proc abstraction classes
@@ -84,6 +84,11 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Mon Jan 11 2021 John Kacur <jkacur@redhat.com> - 0.6.3-1
+- python-linux-procfs: Fix more spacing problems with procfs.py
+- python-linux-procfs: procfs.py: Simplify is_s390
+- python-linux-procfs: procfs.py: Fix a few more style problems
+
 * Mon Jun 22 2020 John Kacur <jkacur@redhat.com> - 0.6.2-1
 - Add bitmasklist_test
 - clean-ups for recent python formating regarding spacing, tabs, etc
