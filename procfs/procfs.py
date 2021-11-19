@@ -357,9 +357,9 @@ class process:
         return hasattr(self, attr)
 
     def load_cmdline(self):
-        f = open("/proc/%d/cmdline" % self.pid)
-        self.cmdline = f.readline().strip().split('\0')[:-1]
-        f.close()
+        with open("/proc/%d/cmdline" % self.pid, mode='rb') as f:
+            cmdline = f.readline().decode(encoding='unicode_escape')
+            self.cmdline = cmdline.strip().split('\0')[:-1]
 
     def load_threads(self):
         self.threads = pidstats("/proc/%d/task/" % self.pid)
