@@ -50,14 +50,25 @@ def main(argv):
         pids = list(ps.processes.keys())
 
     pids.sort()
-    len_comms = [len(ps[pid]["stat"]["comm"]) for pid in pids if pid in ps]
+    len_comms = []
+    for pid in pids:
+        if pid in ps:
+            try:
+                len(ps[pid]["stat"]["comm"])
+            except (TypeError, FileNotFoundError):
+                continue
+            len_comms.append(len(ps[pid]["stat"]["comm"]))
+
     max_comm_len = max(len_comms, default=0)
     del len_comms
 
     for pid in pids:
         if pid not in ps:
             continue
-        flags = ps[pid].stat.process_flags()
+        try:
+            flags = ps[pid].stat.process_flags()
+        except AttributeError:
+            continue
         # Remove flags that were superseeded
         if "PF_THREAD_BOUND" in flags and "PF_NO_SETAFFINITY" in flags:
             flags.remove("PF_THREAD_BOUND")
