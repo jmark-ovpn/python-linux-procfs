@@ -31,4 +31,12 @@ rpmclean:
 pyclean:
 	@find . -type f \( -name \*~ -o -name \*.pyc \) -delete
 
-clean: pyclean rpmclean
+.PHONY: tags
+tags:
+	ctags -R --extra=+fq --python-kinds=+cfmvi
+
+.PHONY: cleantags
+cleantags:
+	rm -f tags
+
+clean: pyclean rpmclean cleantags
