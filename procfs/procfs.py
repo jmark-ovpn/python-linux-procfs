@@ -130,7 +130,12 @@ class pidstat:
 
     def __init__(self, pid, basedir="/proc"):
         self.pid = pid
-        self.load(basedir)
+        try:
+            self.load(basedir)
+        except FileNotFoundError:
+            # The file representing the pid has disappeared
+            #  propagate the error to the user to handle
+            raise
 
     def __getitem__(self, fieldname):
         return self.fields[fieldname]
@@ -151,7 +156,11 @@ class pidstat:
         return fieldname in self.fields
 
     def load(self, basedir="/proc"):
-        f = open("%s/%d/stat" % (basedir, self.pid))
+        try:
+            f = open("%s/%d/stat" % (basedir, self.pid))
+        except FileNotFoundError:
+            # The pid has disappeared, propagate the error
+            raise
         fields = f.readline().strip().split(') ')
         f.close()
         fields = fields[0].split(' (') + fields[1].split()
@@ -338,7 +347,11 @@ class process:
                 else:
                     sclass = pidstatus
 
-                setattr(self, attr, sclass(self.pid, self.basedir))
+                try:
+                    setattr(self, attr, sclass(self.pid, self.basedir))
+                except FileNotFoundError:
+                    # The pid has disappeared, progate the error
+                    raise
             elif attr == "cmdline":
                 self.load_cmdline()
             elif attr == "threads":
