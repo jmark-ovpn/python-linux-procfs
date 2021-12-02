@@ -19,10 +19,10 @@
 #
 
 import os
-import time
-from functools import reduce
 import platform
 import re
+import time
+from functools import reduce
 from six.moves import range
 from procfs.utilist import bitmasklist
 
@@ -37,8 +37,9 @@ def is_s390():
 
 def process_cmdline(pid_info):
     """
-    Returns the process command line, if available in the given `process' class, if
-    not available, falls back to using the comm (short process name) in its pidstat key.
+    Returns the process command line, if available in the given `process' class,
+    if not available, falls back to using the comm (short process name) in its
+    pidstat key.
     """
     if pid_info["cmdline"]:
         return reduce(lambda a, b: a + " %s" % b, pid_info["cmdline"]).strip()
@@ -47,10 +48,12 @@ def process_cmdline(pid_info):
 
 
 class pidstat:
-    """Provides a dictionary to access the fields in the per process /proc/PID/stat
-       files.
+    """
+    Provides a dictionary to access the fields in the
+    per process /proc/PID/stat files.
 
-       One can obtain the available fields asking for the keys of the dictionary, e.g.:
+    One can obtain the available fields by asking for the keys of the
+    dictionary, e.g.:
 
         >>> p = procfs.pidstat(1)
         >>> print p.keys()
@@ -182,8 +185,7 @@ class pidstat:
         Returns true if this process has a fixed smp affinity mask,
                 not allowing it to be moved to a different set of CPUs.
         """
-        return self.fields["flags"] & self.PF_THREAD_BOUND and \
-            True or False
+        return bool(self.fields["flags"] & self.PF_THREAD_BOUND)
 
     def process_flags(self):
         """
@@ -193,33 +195,34 @@ class pidstat:
 
         As of v4.2-rc7 these include (from include/linux/sched.h comments):
 
-            PF_EXITING       Getting shut down
-            PF_EXITPIDONE       Pi exit done on shut down
+            PF_EXITING        Getting shut down
+            PF_EXITPIDONE     Pi exit done on shut down
             PF_VCPU           I'm a virtual CPU
-            PF_WQ_WORKER       I'm a workqueue worker
-            PF_FORKNOEXEC       Forked but didn't exec
-            PF_MCE_PROCESS       Process policy on mce errors
-            PF_SUPERPRIV       Used super-user privileges
+            PF_WQ_WORKER      I'm a workqueue worker
+            PF_FORKNOEXEC     Forked but didn't exec
+            PF_MCE_PROCESS    Process policy on mce errors
+            PF_SUPERPRIV      Used super-user privileges
             PF_DUMPCORE       Dumped core
             PF_SIGNALED       Killed by a signal
             PF_MEMALLOC       Allocating memory
-            PF_NPROC_EXCEEDED  Set_user noticed that RLIMIT_NPROC was exceeded
-            PF_USED_MATH       If unset the fpu must be initialized before use
-            PF_USED_ASYNC       Used async_schedule*(), used by module init
+            PF_NPROC_EXCEEDED Set_user noticed that RLIMIT_NPROC was exceeded
+            PF_USED_MATH      If unset the fpu must be initialized before use
+            PF_USED_ASYNC     Used async_schedule*(), used by module init
             PF_NOFREEZE       This thread should not be frozen
-            PF_FROZEN       Frozen for system suspend
-            PF_FSTRANS       Inside a filesystem transaction
-            PF_KSWAPD       I am kswapd
+            PF_FROZEN          Frozen for system suspend
+            PF_FSTRANS         Inside a filesystem transaction
+            PF_KSWAPD          I am kswapd
             PF_MEMALLOC_NOIO   Allocating memory without IO involved
             PF_LESS_THROTTLE   Throttle me less: I clean memory
-            PF_KTHREAD       I am a kernel thread
+            PF_KTHREAD         I am a kernel thread
             PF_RANDOMIZE       Randomize virtual address space
             PF_SWAPWRITE       Allowed to write to swap
             PF_NO_SETAFFINITY  Userland is not allowed to meddle with cpus_allowed
             PF_MCE_EARLY       Early kill for mce process policy
-            PF_MUTEX_TESTER       Thread belongs to the rt mutex tester
-            PF_FREEZER_SKIP       Freezer should not count it as freezable
-            PF_SUSPEND_TASK       This thread called freeze_processes and should not be frozen
+            PF_MUTEX_TESTER    Thread belongs to the rt mutex tester
+            PF_FREEZER_SKIP    Freezer should not count it as freezable
+            PF_SUSPEND_TASK    This thread called freeze_processes and
+                               should not be frozen
 
         """
         sflags = []
@@ -236,8 +239,8 @@ class pidstat:
 def cannot_set_affinity(self, pid):
     PF_NO_SETAFFINITY = 0x04000000
     try:
-        return int(self.processes[pid]["stat"]["flags"]) & \
-            PF_NO_SETAFFINITY and True or False
+        return bool(int(self.processes[pid]["stat"]["flags"]) &
+                    PF_NO_SETAFFINITY)
     except:
         return True
 
@@ -245,19 +248,21 @@ def cannot_set_affinity(self, pid):
 def cannot_set_thread_affinity(self, pid, tid):
     PF_NO_SETAFFINITY = 0x04000000
     try:
-        return int(self.processes[pid].threads[tid]["stat"]["flags"]) & \
-            PF_NO_SETAFFINITY and True or False
+        return bool(int(self.processes[pid].threads[tid]["stat"]["flags"]) &
+                    PF_NO_SETAFFINITY)
     except:
         return True
 
 
 class pidstatus:
     """
-    Provides a dictionary to access the fields in the per process /proc/PID/status
-    files. This provides additional information about processes and threads to what
-    can be obtained with the procfs.pidstat() class.
+    Provides a dictionary to access the fields
+    in the per process /proc/PID/status files.
+    This provides additional information about processes and threads to
+    what can be obtained with the procfs.pidstat() class.
 
-    One can obtain the available fields asking for the keys of the dictionary, e.g.:
+    One can obtain the available fields by asking for the keys of the
+    dictionary, e.g.:
 
         >>> import procfs
         >>> p = procfs.pidstatus(1)
@@ -312,19 +317,18 @@ class pidstatus:
         return fieldname in self.fields
 
     def load(self, basedir="/proc"):
-        f = open("%s/%d/status" % (basedir, self.pid))
         self.fields = {}
-        for line in f.readlines():
-            fields = line.split(":")
-            if len(fields) != 2:
-                continue
-            name = fields[0]
-            value = fields[1].strip()
-            try:
-                self.fields[name] = int(value)
-            except:
-                self.fields[name] = value
-        f.close()
+        with open("%s/%d/status" % (basedir, self.pid)) as f:
+            for line in f.readlines():
+                fields = line.split(":")
+                if len(fields) != 2:
+                    continue
+                name = fields[0]
+                value = fields[1].strip()
+                try:
+                    self.fields[name] = int(value)
+                except:
+                    self.fields[name] = value
 
 
 class process:
@@ -380,14 +384,13 @@ class process:
         del self.threads[self.pid]
 
     def load_cgroups(self):
-        f = open("/proc/%d/cgroup" % self.pid)
         self.cgroups = ""
-        for line in reversed(f.readlines()):
-            if len(self.cgroups) != 0:
-                self.cgroups = self.cgroups + "," + line[:-1]
-            else:
-                self.cgroups = line[:-1]
-        f.close()
+        with open("/proc/%d/cgroup" % self.pid) as f:
+            for line in reversed(f.readlines()):
+                if len(self.cgroups) != 0:
+                    self.cgroups = self.cgroups + "," + line[:-1]
+                else:
+                    self.cgroups = line[:-1]
 
     def load_environ(self):
         """
@@ -416,12 +419,11 @@ class process:
         >>>
         """
         self.environ = {}
-        f = open("/proc/%d/environ" % self.pid)
-        for x in f.readline().split('\0'):
-            if len(x) > 0:
-                y = x.split('=')
-                self.environ[y[0]] = y[1]
-        f.close()
+        with open("/proc/%d/environ" % self.pid) as f:
+            for x in f.readline().split('\0'):
+                if len(x) > 0:
+                    y = x.split('=')
+                    self.environ[y[0]] = y[1]
 
 
 class pidstats:
@@ -465,18 +467,18 @@ class pidstats:
 
     def reload(self):
         """
-        This operation will throw away the current dictionary contents, if any, and
-        read all the pid files from /proc/, instantiating a 'process' instance for
-        each of them.
+        This operation will throw away the current dictionary contents,
+        if any, and read all the pid files from /proc/, instantiating a
+        'process' instance for each of them.
 
-        This is a high overhead operation, and should be avoided if the perf python
-        binding can be used to detect when new threads appear and existing ones
-        terminate.
+        This is a high overhead operation, and should be avoided if the
+        perf python binding can be used to detect when new threads appear
+        and existing ones terminate.
 
         In RHEL it is found in the python-perf rpm package.
 
-        More information about the perf facilities can be found in the 'perf_event_open'
-        man page.
+        More information about the perf facilities can be found in the
+        'perf_event_open' man page.
         """
         del self.processes
         self.processes = {}
@@ -643,24 +645,21 @@ class interrupts:
     def reload(self):
         del self.interrupts
         self.interrupts = {}
-        f = open("/proc/interrupts")
-
-        for line in f.readlines():
-            line = line.strip()
-            fields = line.split()
-            if fields[0][:3] == "CPU":
-                self.nr_cpus = len(fields)
-                continue
-            irq = fields[0].strip(":")
-            self.interrupts[irq] = {}
-            self.interrupts[irq] = self.parse_entry(fields[1:], line)
-            try:
-                nirq = int(irq)
-            except:
-                continue
-            self.interrupts[irq]["affinity"] = self.parse_affinity(nirq)
-
-        f.close()
+        with open("/proc/interrupts") as f:
+            for line in f.readlines():
+                line = line.strip()
+                fields = line.split()
+                if fields[0][:3] == "CPU":
+                    self.nr_cpus = len(fields)
+                    continue
+                irq = fields[0].strip(":")
+                self.interrupts[irq] = {}
+                self.interrupts[irq] = self.parse_entry(fields[1:], line)
+                try:
+                    nirq = int(irq)
+                except:
+                    continue
+                self.interrupts[irq]["affinity"] = self.parse_affinity(nirq)
 
     def parse_entry(self, fields, line):
         dict = {}
@@ -681,9 +680,8 @@ class interrupts:
 
     def parse_affinity(self, irq):
         try:
-            f = open("/proc/irq/%s/smp_affinity" % irq)
-            line = f.readline()
-            f.close()
+            with open("/proc/irq/%s/smp_affinity" % irq) as f:
+                line = f.readline()
             return bitmasklist(line, self.nr_cpus)
         except IOError:
             return [0, ]
@@ -741,11 +739,11 @@ class cmdline:
     """
     Parses the kernel command line (/proc/cmdline), turning it into a dictionary."
 
-    Useful to figure out if some kernel boolean knob has been turned on, as well
-    as to find the value associated to other kernel knobs.
+    Useful to figure out if some kernel boolean knob has been turned on,
+    as well as to find the value associated to other kernel knobs.
 
-    It can also be used to find out about parameters passed to the init process,
-    such as 'BOOT_IMAGE', etc.
+    It can also be used to find out about parameters passed to the
+    init process, such as 'BOOT_IMAGE', etc.
 
     E.g.:
     >>> import procfs
@@ -762,15 +760,13 @@ class cmdline:
         self.parse()
 
     def parse(self):
-        f = open("/proc/cmdline")
-        for option in f.readline().strip().split():
-            fields = option.split("=")
-            if len(fields) == 1:
-                self.options[fields[0]] = True
-            else:
-                self.options[fields[0]] = fields[1]
-
-        f.close()
+        with open("/proc/cmdline") as f:
+            for option in f.readline().strip().split():
+                fields = option.split("=")
+                if len(fields) == 1:
+                    self.options[fields[0]] = True
+                else:
+                    self.options[fields[0]] = fields[1]
 
     def __getitem__(self, key):
         return self.options[key]
@@ -790,9 +786,9 @@ class cpuinfo:
     Dictionary with information about CPUs in the system.
 
     Please refer to 'man procfs(5)' for further information about the
-        '/proc/cpuinfo' file, that is the source of the information provided by this
-        class. The 'man lscpu(1)' also has information about a program that uses
-    the '/proc/cpuinfo' file.
+    '/proc/cpuinfo' file, that is the source of the information provided
+    by this class. The 'man lscpu(1)' also has information about a program that
+    uses the '/proc/cpuinfo' file.
 
     Using this class one can obtain the number of CPUs in a system:
 
@@ -801,14 +797,14 @@ class cpuinfo:
           4
 
     It is also possible to figure out aspects of the CPU topology, such as
-    how many CPU physical sockets exists, i.e. groups of CPUs sharing components
-    such as CPU memory caches:
+    how many CPU physical sockets exists, i.e. groups of CPUs sharing
+    components such as CPU memory caches:
 
       >>> print len(cpus.sockets)
       1
 
-    Additionally dictionary with information common to all CPUs in the system is
-    available:
+    Additionally dictionary with information common to all CPUs in the system
+    is available:
 
       >>> print cpus["model name"]
           Intel(R) Core(TM) i7-3667U CPU @ 2.00GHz
@@ -836,28 +832,26 @@ class cpuinfo:
         return self.tags
 
     def parse(self, filename):
-        f = open(filename)
-        for line in f.readlines():
-            line = line.strip()
-            if not line:
-                continue
-            fields = line.split(":")
-            tagname = fields[0].strip().lower()
-            if tagname == "processor":
-                self.nr_cpus += 1
-                continue
-            if is_s390() and tagname == "cpu number":
-                self.nr_cpus += 1
-                continue
-            if tagname == "core id":
-                continue
-            self.tags[tagname] = fields[1].strip()
-            if tagname == "physical id":
-                socket_id = self.tags[tagname]
-                if socket_id not in self.sockets:
-                    self.sockets.append(socket_id)
-
-        f.close()
+        with open(filename) as f:
+            for line in f.readlines():
+                line = line.strip()
+                if not line:
+                    continue
+                fields = line.split(":")
+                tagname = fields[0].strip().lower()
+                if tagname == "processor":
+                    self.nr_cpus += 1
+                    continue
+                if is_s390() and tagname == "cpu number":
+                    self.nr_cpus += 1
+                    continue
+                if tagname == "core id":
+                    continue
+                self.tags[tagname] = fields[1].strip()
+                if tagname == "physical id":
+                    socket_id = self.tags[tagname]
+                    if socket_id not in self.sockets:
+                        self.sockets.append(socket_id)
         self.nr_sockets = self.sockets and len(self.sockets) or \
             (self.nr_cpus /
              ("siblings" in self.tags and int(self.tags["siblings"]) or 1))
@@ -870,7 +864,8 @@ class smaps_lib:
     Representation of an mmap in place for a process. Can be used to figure
     out which processes have an library mapped, etc.
 
-    The 'perm' member can be used to figure out executable mmaps, i.e. libraries.
+    The 'perm' member can be used to figure out executable mmaps,
+    i.e. libraries.
 
     The 'vm_start' and 'vm_end' in turn can be used when trying to resolve
     processor instruction pointer addresses to a symbol name in a library.
@@ -967,13 +962,12 @@ class smaps:
         return self.entries[index]
 
     def reload(self):
-        f = open("/proc/%d/smaps" % self.pid)
         line = None
-        while True:
-            line = self.parse_entry(f, line)
-            if not line:
-                break
-        f.close()
+        with("/proc/%d/smaps" % self.pid) as f:
+            while True:
+                line = self.parse_entry(f, line)
+                if not line:
+                    break
         self.nr_entries = len(self.entries)
 
     def find_by_name_fragment(self, fragment):
@@ -1055,18 +1049,17 @@ class cpusstats:
     def reload(self):
         last_entries = self.entries
         self.entries = {}
-        f = open(self.filename)
-        for line in f.readlines():
-            fields = line.strip().split()
-            if fields[0][:3].lower() != "cpu":
-                continue
-            c = cpustat(fields)
-            if c.name == "cpu":
-                idx = 0
-            else:
-                idx = int(c.name[3:]) + 1
-            self.entries[idx] = c
-        f.close()
+        with open(self.filename) as f:
+            for line in f.readlines():
+                fields = line.strip().split()
+                if fields[0][:3].lower() != "cpu":
+                    continue
+                c = cpustat(fields)
+                if c.name == "cpu":
+                    idx = 0
+                else:
+                    idx = int(c.name[3:]) + 1
+                self.entries[idx] = c
         last_time = self.time
         self.time = time.time()
         if last_entries:
@@ -1082,8 +1075,7 @@ class cpusstats:
                     (curr.nice - prev.nice) + \
                     (curr.system - prev.system)
                 curr.usage = (delta / interval_hz) * 100
-                if curr.usage > 100:
-                    curr.usage = 100
+                curr.usage = min(curr.usage, 100)
 
 
 if __name__ == '__main__':
