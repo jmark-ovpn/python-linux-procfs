@@ -26,5 +26,4 @@ __author__ = "Arnaldo Carvalho de Melo <acme@redhat.com>"
 __license__ = "GPLv2 License"
 
 from .procfs import *
-from .sysctl import *
 from .utilist import *
