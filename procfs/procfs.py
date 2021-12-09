@@ -44,7 +44,11 @@ def process_cmdline(pid_info):
     if pid_info["cmdline"]:
         return reduce(lambda a, b: a + " %s" % b, pid_info["cmdline"]).strip()
 
-    return pid_info["stat"]["comm"]
+    try:
+        """ If a pid disappears before we query it, return None """
+        return pid_info["stat"]["comm"]
+    except:
+        return None
 
 
 class pidstat:
@@ -374,9 +378,15 @@ class process:
         return hasattr(self, attr)
 
     def load_cmdline(self):
-        with open("/proc/%d/cmdline" % self.pid, mode='rb') as f:
-            cmdline = f.readline().decode(encoding='unicode_escape')
-            self.cmdline = cmdline.strip().split('\0')[:-1]
+        try:
+            with open("/proc/%d/cmdline" % self.pid) as f:
+                self.cmdline = f.readline().strip().split('\0')[:-1]
+        except FileNotFoundError:
+            """ This can happen when a pid disappears """
+            self.cmdline = None
+        except UnicodeDecodeError:
+            """ TODO - this shouldn't happen, needs to be investigated """
+            self.cmdline = None
 
     def load_threads(self):
         self.threads = pidstats("/proc/%d/task/" % self.pid)
