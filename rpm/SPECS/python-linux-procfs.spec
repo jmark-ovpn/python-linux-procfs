@@ -5,7 +5,7 @@
 %endif
 
 Name: python-linux-procfs
-Version: 0.6.3
+Version: 0.7.0
 Release: 1%{?dist}
 License: GPLv2
 Summary: Linux /proc abstraction classes
@@ -84,6 +84,17 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Mon Jan 10 2022 John Kacur <jkacur@redhat.com> - 0.7.0-1
+- python-linux-procfs: Add tar.xz and asc files to gitignore
+- python-linux-procfs: Fix traceback with non-utf8 chars in the
+  /proc/PID/cmdline
+- python-linux-procfs: Propagate error to user if a pid is completed
+- python-linux-procfs: pflags: Handle pids that completed
+- python-linux-procfs: Makefile: Add ctags
+- python-linux-procfs: Remove procfs/sysctl.py
+- python-linux-procfs: Various clean-ups
+- python-linux-procfs: Fix UnicodeDecodeError
+
 * Mon Jan 11 2021 John Kacur <jkacur@redhat.com> - 0.6.3-1
 - python-linux-procfs: Fix more spacing problems with procfs.py
 - python-linux-procfs: procfs.py: Simplify is_s390
