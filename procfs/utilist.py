@@ -27,7 +27,7 @@ def hexbitmask(l, nr_entries):
     mask = 0
     for entry in range(nr_entries):
         if entry in l:
-            mask |= (1 << bit)
+            mask |= 1 << bit
         bit += 1
         if bit == 32:
             bit = 0
@@ -38,6 +38,7 @@ def hexbitmask(l, nr_entries):
         hexbitmask.insert(0, mask)
 
     return hexbitmask
+
 
 def bitmasklist(line, nr_entries):
     hexmask = line.strip().replace(",", "")

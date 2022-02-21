@@ -23,16 +23,18 @@ import platform
 import re
 import time
 from functools import reduce
+
 from six.moves import range
+
 from procfs.utilist import bitmasklist
 
 VERSION = "0.5"
 
 
 def is_s390():
-    """ Return True if running on s390 or s390x """
+    """Return True if running on s390 or s390x"""
     machine = platform.machine()
-    return bool(re.search('s390', machine))
+    return bool(re.search("s390", machine))
 
 
 def process_cmdline(pid_info):
@@ -45,7 +47,7 @@ def process_cmdline(pid_info):
         return reduce(lambda a, b: a + " %s" % b, pid_info["cmdline"]).strip()
 
     try:
-        """ If a pid disappears before we query it, return None """
+        """If a pid disappears before we query it, return None"""
         return pid_info["stat"]["comm"]
     except:
         return None
@@ -123,17 +125,51 @@ class pidstat:
     # /* this thread called freeze_processes and should not be frozen */
     PF_SUSPEND_TASK = 0x80000000
 
-    proc_stat_fields = ["pid", "comm", "state", "ppid", "pgrp", "session",
-                        "tty_nr", "tpgid", "flags", "minflt", "cminflt",
-                        "majflt", "cmajflt", "utime", "stime", "cutime",
-                        "cstime", "priority", "nice", "num_threads",
-                        "itrealvalue", "starttime", "vsize", "rss",
-                        "rlim", "startcode", "endcode", "startstack",
-                        "kstkesp", "kstkeip", "signal", "blocked",
-                        "sigignore", "sigcatch", "wchan", "nswap",
-                        "cnswap", "exit_signal", "processor",
-                        "rt_priority", "policy",
-                        "delayacct_blkio_ticks", "environ"]
+    proc_stat_fields = [
+        "pid",
+        "comm",
+        "state",
+        "ppid",
+        "pgrp",
+        "session",
+        "tty_nr",
+        "tpgid",
+        "flags",
+        "minflt",
+        "cminflt",
+        "majflt",
+        "cmajflt",
+        "utime",
+        "stime",
+        "cutime",
+        "cstime",
+        "priority",
+        "nice",
+        "num_threads",
+        "itrealvalue",
+        "starttime",
+        "vsize",
+        "rss",
+        "rlim",
+        "startcode",
+        "endcode",
+        "startstack",
+        "kstkesp",
+        "kstkeip",
+        "signal",
+        "blocked",
+        "sigignore",
+        "sigcatch",
+        "wchan",
+        "nswap",
+        "cnswap",
+        "exit_signal",
+        "processor",
+        "rt_priority",
+        "policy",
+        "delayacct_blkio_ticks",
+        "environ",
+    ]
 
     def __init__(self, pid, basedir="/proc"):
         self.pid = pid
@@ -168,16 +204,16 @@ class pidstat:
         except FileNotFoundError:
             # The pid has disappeared, propagate the error
             raise
-        fields = f.readline().strip().split(') ')
+        fields = f.readline().strip().split(") ")
         f.close()
-        fields = fields[0].split(' (') + fields[1].split()
+        fields = fields[0].split(" (") + fields[1].split()
         self.fields = {}
         nr_fields = min(len(fields), len(self.proc_stat_fields))
         for i in range(nr_fields):
             attrname = self.proc_stat_fields[i]
             value = fields[i]
             if attrname == "comm":
-                self.fields["comm"] = value.strip('()')
+                self.fields["comm"] = value.strip("()")
             else:
                 try:
                     self.fields[attrname] = int(value)
@@ -243,8 +279,7 @@ class pidstat:
 def cannot_set_affinity(self, pid):
     PF_NO_SETAFFINITY = 0x04000000
     try:
-        return bool(int(self.processes[pid]["stat"]["flags"]) &
-                    PF_NO_SETAFFINITY)
+        return bool(int(self.processes[pid]["stat"]["flags"]) & PF_NO_SETAFFINITY)
     except:
         return True
 
@@ -252,8 +287,9 @@ def cannot_set_affinity(self, pid):
 def cannot_set_thread_affinity(self, pid, tid):
     PF_NO_SETAFFINITY = 0x04000000
     try:
-        return bool(int(self.processes[pid].threads[tid]["stat"]["flags"]) &
-                    PF_NO_SETAFFINITY)
+        return bool(
+            int(self.processes[pid].threads[tid]["stat"]["flags"]) & PF_NO_SETAFFINITY
+        )
     except:
         return True
 
@@ -380,12 +416,12 @@ class process:
     def load_cmdline(self):
         try:
             with open("/proc/%d/cmdline" % self.pid) as f:
-                self.cmdline = f.readline().strip().split('\0')[:-1]
+                self.cmdline = f.readline().strip().split("\0")[:-1]
         except FileNotFoundError:
-            """ This can happen when a pid disappears """
+            """This can happen when a pid disappears"""
             self.cmdline = None
         except UnicodeDecodeError:
-            """ TODO - this shouldn't happen, needs to be investigated """
+            """TODO - this shouldn't happen, needs to be investigated"""
             self.cmdline = None
 
     def load_threads(self):
@@ -430,9 +466,9 @@ class process:
         """
         self.environ = {}
         with open("/proc/%d/environ" % self.pid) as f:
-            for x in f.readline().split('\0'):
+            for x in f.readline().split("\0"):
                 if len(x) > 0:
-                    y = x.split('=')
+                    y = x.split("=")
                     self.environ[y[0]] = y[1]
 
 
@@ -573,7 +609,7 @@ class pidstats:
             processed_pids += pids
             cpu += 1
 
-        priorities = priorities.strip(',')
+        priorities = priorities.strip(",")
         return priorities
 
     def get_rtprios(self, name):
@@ -595,7 +631,7 @@ class pidstats:
             processed_pids += pids
             cpu += 1
 
-        priorities = priorities.strip(',')
+        priorities = priorities.strip(",")
         return priorities
 
     def is_bound_to_cpu(self, pid):
@@ -677,13 +713,14 @@ class interrupts:
         dict["cpu"].append(int(fields[0]))
         nr_fields = len(fields)
         if nr_fields >= self.nr_cpus:
-            dict["cpu"] += [int(i) for i in fields[1:self.nr_cpus]]
+            dict["cpu"] += [int(i) for i in fields[1 : self.nr_cpus]]
             if nr_fields > self.nr_cpus:
                 dict["type"] = fields[self.nr_cpus]
                 # look if there are users (interrupts 3 and 4 haven't)
                 if nr_fields > self.nr_cpus + 1:
-                    dict["users"] = [a.strip()
-                                     for a in fields[nr_fields - 1].split(',')]
+                    dict["users"] = [
+                        a.strip() for a in fields[nr_fields - 1].split(",")
+                    ]
                 else:
                     dict["users"] = []
         return dict
@@ -694,7 +731,9 @@ class interrupts:
                 line = f.readline()
             return bitmasklist(line, self.nr_cpus)
         except IOError:
-            return [0, ]
+            return [
+                0,
+            ]
 
     def find_by_user(self, user):
         """
@@ -713,8 +752,7 @@ class interrupts:
         >>>
         """
         for i in list(self.interrupts.keys()):
-            if "users" in self.interrupts[i] and \
-               user in self.interrupts[i]["users"]:
+            if "users" in self.interrupts[i] and user in self.interrupts[i]["users"]:
                 return i
         return None
 
@@ -862,11 +900,17 @@ class cpuinfo:
                     socket_id = self.tags[tagname]
                     if socket_id not in self.sockets:
                         self.sockets.append(socket_id)
-        self.nr_sockets = self.sockets and len(self.sockets) or \
-            (self.nr_cpus /
-             ("siblings" in self.tags and int(self.tags["siblings"]) or 1))
-        self.nr_cores = ("cpu cores" in self.tags and int(
-            self.tags["cpu cores"]) or 1) * self.nr_sockets
+        self.nr_sockets = (
+            self.sockets
+            and len(self.sockets)
+            or (
+                self.nr_cpus
+                / ("siblings" in self.tags and int(self.tags["siblings"]) or 1)
+            )
+        )
+        self.nr_cores = (
+            "cpu cores" in self.tags and int(self.tags["cpu cores"]) or 1
+        ) * self.nr_sockets
 
 
 class smaps_lib:
@@ -958,7 +1002,7 @@ class smaps:
             if not line:
                 break
             line = line.strip()
-            if line.split()[0][-1] == ':':
+            if line.split()[0][-1] == ":":
                 lines.append(line)
             else:
                 break
@@ -973,7 +1017,7 @@ class smaps:
 
     def reload(self):
         line = None
-        with("/proc/%d/smaps" % self.pid) as f:
+        with ("/proc/%d/smaps" % self.pid) as f:
             while True:
                 line = self.parse_entry(f, line)
                 if not line:
@@ -983,8 +1027,7 @@ class smaps:
     def find_by_name_fragment(self, fragment):
         result = []
         for i in range(self.nr_entries):
-            if self.entries[i].name and \
-               self.entries[i].name.find(fragment) >= 0:
+            if self.entries[i].name and self.entries[i].name.find(fragment) >= 0:
                 result.append(self.entries[i])
 
         return result
@@ -999,25 +1042,36 @@ class cpustat:
 
     def __init__(self, fields):
         self.name = fields[0]
-        (self.user,
-         self.nice,
-         self.system,
-         self.idle,
-         self.iowait,
-         self.irq,
-         self.softirq) = [int(i) for i in fields[1:8]]
+        (
+            self.user,
+            self.nice,
+            self.system,
+            self.idle,
+            self.iowait,
+            self.irq,
+            self.softirq,
+        ) = [int(i) for i in fields[1:8]]
         if len(fields) > 7:
             self.steal = int(fields[7])
             if len(fields) > 8:
                 self.guest = int(fields[8])
 
     def __repr__(self):
-        s = "< user: %s, nice: %s, system: %s, idle: %s, iowait: %s, irq: %s, softirq: %s" % \
-            (self.user, self.nice, self.system, self.idle,
-             self.iowait, self.irq, self.softirq)
-        if hasattr(self, 'steal'):
+        s = (
+            "< user: %s, nice: %s, system: %s, idle: %s, iowait: %s, irq: %s, softirq: %s"
+            % (
+                self.user,
+                self.nice,
+                self.system,
+                self.idle,
+                self.iowait,
+                self.irq,
+                self.softirq,
+            )
+        )
+        if hasattr(self, "steal"):
             s += ", steal: %d" % self.steal
-        if hasattr(self, 'guest'):
+        if hasattr(self, "guest"):
             s += ", guest: %d" % self.guest
         return s + ">"
 
@@ -1081,14 +1135,16 @@ class cpusstats:
                     continue
                 curr = self.entries[cpu]
                 prev = last_entries[cpu]
-                delta = (curr.user - prev.user) + \
-                    (curr.nice - prev.nice) + \
-                    (curr.system - prev.system)
+                delta = (
+                    (curr.user - prev.user)
+                    + (curr.nice - prev.nice)
+                    + (curr.system - prev.system)
+                )
                 curr.usage = (delta / interval_hz) * 100
                 curr.usage = min(curr.usage, 100)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     ints = interrupts()
