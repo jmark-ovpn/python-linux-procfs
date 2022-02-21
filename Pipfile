@@ -7,6 +7,12 @@ name = "pypi"
 six = "*"
 
 [dev-packages]
+black = "*"
+flake8 = "*"
+isort = "*"
+
+[pipenv]
+allow_prereleases = true
 
 [requires]
 python_version = "3.8"
