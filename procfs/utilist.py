@@ -21,12 +21,12 @@
 from six.moves import range
 
 
-def hexbitmask(l, nr_entries):
+def hexbitmask(entry_list, nr_entries):
     hexbitmask = []
     bit = 0
     mask = 0
     for entry in range(nr_entries):
-        if entry in l:
+        if entry in entry_list:
             mask |= 1 << bit
         bit += 1
         if bit == 32:

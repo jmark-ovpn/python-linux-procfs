@@ -49,7 +49,7 @@ def process_cmdline(pid_info):
     try:
         """If a pid disappears before we query it, return None"""
         return pid_info["stat"]["comm"]
-    except:
+    except KeyError:
         return None
 
 
@@ -217,7 +217,7 @@ class pidstat:
             else:
                 try:
                     self.fields[attrname] = int(value)
-                except:
+                except ValueError:
                     self.fields[attrname] = value
 
     def is_bound_to_cpu(self):
@@ -367,7 +367,7 @@ class pidstatus:
                 value = fields[1].strip()
                 try:
                     self.fields[name] = int(value)
-                except:
+                except ValueError:
                     self.fields[name] = value
 
 
@@ -532,7 +532,7 @@ class pidstats:
         for spid in pids:
             try:
                 pid = int(spid)
-            except:
+            except ValueError:
                 continue
 
             self.processes[pid] = process(pid, self.basedir)
@@ -703,7 +703,7 @@ class interrupts:
                 self.interrupts[irq] = self.parse_entry(fields[1:], line)
                 try:
                     nirq = int(irq)
-                except:
+                except ValueError:
                     continue
                 self.interrupts[irq]["affinity"] = self.parse_affinity(nirq)
 
@@ -1130,10 +1130,10 @@ class cpusstats:
             delta_sec = self.time - last_time
             interval_hz = delta_sec * self.hertz
             for cpu in list(self.entries.keys()):
+                curr = self.entries[cpu]
                 if cpu not in last_entries:
                     curr.usage = 0
                     continue
-                curr = self.entries[cpu]
                 prev = last_entries[cpu]
                 delta = (
                     (curr.user - prev.user)

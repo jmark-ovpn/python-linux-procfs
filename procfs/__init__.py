@@ -24,6 +24,3 @@ Abstractions to extract information from the Linux kernel /proc files.
 """
 __author__ = "Arnaldo Carvalho de Melo <acme@redhat.com>"
 __license__ = "GPLv2 License"
-
-from .procfs import *
-from .utilist import *
